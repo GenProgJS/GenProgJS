@@ -1,0 +1,28 @@
+{
+  "name": "genops",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bin/src/index.js",
+  "scripts": {
+    "test": "nyc mocha test --recursive",
+    "coverage": "nyc --reporter=html mocha test --recursive"
+  },
+  "keywords": [],
+  "author": "skyzip",
+  "contributors": [
+    "Viktor Csuvik"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "@types/escodegen": "0.0.6",
+    "@types/esprima": "^4.0.2",
+    "@types/lodash": "^4.14.149",
+    "@types/node": "^13.7.7",
+    "chai": "^4.2.0",
+    "escodegen": "^1.13.0",
+    "esprima": "^4.0.1",
+    "mocha": "^7.0.1",
+    "nyc": "^15.0.0",
+    "typescript": "^3.8.3"
+  }
+}

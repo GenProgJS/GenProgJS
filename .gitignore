@@ -1,0 +1,8 @@
+.idea/*
+venv/*
+__pycache__/*
+*/__pycache__/*
+*/0)
+node_modules
+temp
+output

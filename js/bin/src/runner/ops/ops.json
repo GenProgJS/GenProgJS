@@ -1,0 +1,20 @@
+{
+    "operators": [
+        "BinExprChangerOperator",
+        "CallChangerOperator",
+        "ConditionalChangerOperator",
+        "ConditionalInverterOperator",
+        "ExprReplacerOperator",
+        "ExprStatementChangerOperator",
+        "ExprStatementInserterOperator",
+        "ExprStatementRemoverOperator",
+        "LogicalExprChangerOperator",
+        "MutExprStatementInserterOperator",
+        "MutExprStatementChangerOperator",
+        "NullCheckOperator",
+        "NumberChangerOperator",
+        "ReturnInsertOperator",
+        "VarChangerOperator",
+		"TreeCrossoverOperator"
+    ]
+}

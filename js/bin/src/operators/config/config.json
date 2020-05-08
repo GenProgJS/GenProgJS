@@ -1,0 +1,11 @@
+{
+    "esprima": {
+        "tolerant": true,
+        "loc": true,
+        "range": true
+    },
+    "left_offset_threshold": null,
+    "right_offset_threshold": null,
+    "exclude_member_calls": false,
+    "expr_replacer_exclude": []
+}
