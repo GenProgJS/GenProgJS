@@ -33,7 +33,7 @@ class MutExprStatementInserterOperator extends MutationOperator_1.MutationOperat
         super._init();
     }
     _operator(node, metadata) {
-        if (this.is_buggy_line(metadata)) {
+        if (this.is_buggy_line(metadata, false)) {
             if (node.type === esprima_1.Syntax.ExpressionStatement) {
                 this._buggy_statements.push(node);
                 this._buggy_statements_meta.push(metadata);
@@ -41,16 +41,19 @@ class MutExprStatementInserterOperator extends MutationOperator_1.MutationOperat
         }
         this._nodes.push(node);
         this._meta.push(metadata);
+        this.stash(node, metadata);
     }
     _generate_patch() {
         if (this._err !== null)
-            return super.code;
-        if (this._buggy_statements.length > 0) {
+            return super.cleaned_code;
+        let buggy_statements = this._buggy_statements.filter(value => { return super.node_id(value) === 0; });
+        let buggy_statements_meta = this._buggy_statements_meta.filter(value => { return super.node_id(value) === 0; });
+        if (buggy_statements.length > 0) {
             // possibly always be 0, but who knows...
             // in case of multiple expressions in one line
-            const index = rand_1.Rand.range(this._buggy_statements.length);
-            const bug = this._buggy_statements[index];
-            const bug_meta = this._buggy_statements_meta[index];
+            const index = rand_1.Rand.range(buggy_statements.length);
+            const bug = buggy_statements[index];
+            const bug_meta = buggy_statements_meta[index];
             let nodes, metadata;
             [nodes, metadata] = filters.filter_by_offset(this._nodes, this._meta, bug_meta, config.left_offset_threshold, config.right_offset_threshold);
             [nodes, metadata] = filters.filter_between(nodes, metadata, bug_meta.start.offset, bug_meta.end.offset);
@@ -71,23 +74,23 @@ class MutExprStatementInserterOperator extends MutationOperator_1.MutationOperat
             }
             catch (err) {
                 this._err = err;
-                return super.code;
+                return super.cleaned_code;
             }
             if (new_node) {
                 // before/after boolean - before = true, after = false
                 const befter = Math.random() < 0.5;
                 const patch = index_1.gencode(escodegen_1.default, new_node);
                 if (befter) {
-                    return super.code.slice(0, bug_meta.start.offset) +
-                        patch + '\n' + super.code.slice(bug_meta.start.offset);
+                    return super.cleaned_code.slice(0, bug_meta.start.offset) +
+                        patch + '\n' + super.cleaned_code.slice(bug_meta.start.offset);
                 }
                 else {
-                    return super.code.slice(0, bug_meta.end.offset) +
-                        '\n' + patch + super.code.slice(bug_meta.end.offset);
+                    return super.cleaned_code.slice(0, bug_meta.end.offset) +
+                        '\n' + patch + super.cleaned_code.slice(bug_meta.end.offset);
                 }
             }
         }
-        return super.code;
+        return super.cleaned_code;
     }
 }
 exports.MutExprStatementInserterOperator = MutExprStatementInserterOperator;

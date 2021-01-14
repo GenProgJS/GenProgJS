@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.98% </span>
+                <span class="strong">20.34% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>9/53</span>
+                <span class='fraction'>12/59</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.67% </span>
+                <span class="strong">25% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/6</span>
+                <span class='fraction'>2/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.33% </span>
+                <span class="strong">20.75% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>8/49</span>
+                <span class='fraction'>11/53</span>
             </div>
         
             
@@ -130,7 +130,11 @@
 <a name='L71'></a><a href='#L71'>71</a>
 <a name='L72'></a><a href='#L72'>72</a>
 <a name='L73'></a><a href='#L73'>73</a>
-<a name='L74'></a><a href='#L74'>74</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -145,9 +149,9 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -164,6 +168,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -171,11 +176,14 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -217,10 +225,10 @@ const MutationOperator_1 = require("./base/MutationOperator");
 const rand_1 = require("../random/rand");
 const filters = __importStar(require("./filters/filters"));
 class NumberChangerOperator extends MutationOperator_1.MutationOperator {
-<span class="fstat-no" title="function not covered" >    co</span>nstructor(code, buggy_line) {
-<span class="cstat-no" title="statement not covered" >        super(code, buggy_line);</span>
-<span class="cstat-no" title="statement not covered" >        this._entries = [];</span>
-<span class="cstat-no" title="statement not covered" >        this._meta = [];</span>
+    constructor(code, buggy_line) {
+        super(code, buggy_line);
+        this._entries = [];
+        this._meta = [];
     }
 <span class="fstat-no" title="function not covered" >    _g</span>en() {
         let r = <span class="cstat-no" title="statement not covered" >Math.random();</span>
@@ -237,6 +245,7 @@ class NumberChangerOperator extends MutationOperator_1.MutationOperator {
 <span class="cstat-no" title="statement not covered" >                if (!isNaN(Number(node.value))) {</span>
 <span class="cstat-no" title="statement not covered" >                    this._entries.push(node);</span>
 <span class="cstat-no" title="statement not covered" >                    this._meta.push(metadata);</span>
+<span class="cstat-no" title="statement not covered" >                    this.stash(node, metadata);</span>
                 }
             }
             else <span class="cstat-no" title="statement not covered" >if (node.type === esprima_1.Syntax.UnaryExpression &amp;&amp;</span>
@@ -244,17 +253,20 @@ class NumberChangerOperator extends MutationOperator_1.MutationOperator {
 <span class="cstat-no" title="statement not covered" >                if (!isNaN(Number(node.argument.value))) {</span>
 <span class="cstat-no" title="statement not covered" >                    this._entries.push(node);</span>
 <span class="cstat-no" title="statement not covered" >                    this._meta.push(metadata);</span>
+<span class="cstat-no" title="statement not covered" >                    this.stash(node, metadata);</span>
                 }
             }
         }
     }
 <span class="fstat-no" title="function not covered" >    _g</span>enerate_patch() {
 <span class="cstat-no" title="statement not covered" >        if (this._err !== null)</span>
-<span class="cstat-no" title="statement not covered" >            return super.code;</span>
-<span class="cstat-no" title="statement not covered" >        if (this._entries.length &gt; 0) {</span>
+<span class="cstat-no" title="statement not covered" >            return super.cleaned_code;</span>
+        let entries = <span class="cstat-no" title="statement not covered" >this._entries.filter(<span class="fstat-no" title="function not covered" >va</span>lue =&gt; { <span class="cstat-no" title="statement not covered" >return super.node_id(value) === 0; </span>});</span>
+        let entries_meta = <span class="cstat-no" title="statement not covered" >this._meta.filter(<span class="fstat-no" title="function not covered" >va</span>lue =&gt; { <span class="cstat-no" title="statement not covered" >return super.node_id(value) === 0; </span>});</span>
+<span class="cstat-no" title="statement not covered" >        if (entries.length &gt; 0) {</span>
             let filt_entries = <span class="cstat-no" title="statement not covered" >[];</span>
             let filt_meta = <span class="cstat-no" title="statement not covered" >[];</span>
-<span class="cstat-no" title="statement not covered" >            [filt_entries, filt_meta] = filters.filter_duplicate_numerics(this._entries, this._meta);</span>
+<span class="cstat-no" title="statement not covered" >            [filt_entries, filt_meta] = filters.filter_duplicate_numerics(entries, entries_meta);</span>
             const rand = <span class="cstat-no" title="statement not covered" >rand_1.Rand.range(filt_entries.length);</span>
             const entry = <span class="cstat-no" title="statement not covered" >filt_entries[rand];</span>
             const meta = <span class="cstat-no" title="statement not covered" >filt_meta[rand];</span>
@@ -264,15 +276,15 @@ class NumberChangerOperator extends MutationOperator_1.MutationOperator {
             else <span class="cstat-no" title="statement not covered" >if (entry.type === esprima_1.Syntax.UnaryExpression)</span>
 <span class="cstat-no" title="statement not covered" >                val = Number(entry.operator.concat(entry.argument.value));</span>
             else
-<span class="cstat-no" title="statement not covered" >                return super.code;</span>
+<span class="cstat-no" title="statement not covered" >                return super.cleaned_code;</span>
 <span class="cstat-no" title="statement not covered" >            if (isNaN(val))</span>
-<span class="cstat-no" title="statement not covered" >                return super.code;</span>
+<span class="cstat-no" title="statement not covered" >                return super.cleaned_code;</span>
 <span class="cstat-no" title="statement not covered" >            val += this._gen();</span>
             let patch = <span class="cstat-no" title="statement not covered" >val.toString();</span>
-<span class="cstat-no" title="statement not covered" >            return super.code.slice(0, meta.start.offset) +</span>
-                patch + super.code.slice(meta.end.offset);
+<span class="cstat-no" title="statement not covered" >            return super.cleaned_code.slice(0, meta.start.offset) +</span>
+                patch + super.cleaned_code.slice(meta.end.offset);
         }
-<span class="cstat-no" title="statement not covered" >        return super.code;</span>
+<span class="cstat-no" title="statement not covered" >        return super.cleaned_code;</span>
     }
 }
 exports.NumberChangerOperator = NumberChangerOperator;
@@ -283,7 +295,7 @@ exports.NumberChangerOperator = NumberChangerOperator;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Sun Apr 19 2020 10:58:17 GMT+0200 (Central European Summer Time)
+                at Thu Jul 16 2020 19:26:18 GMT+0200 (Central European Summer Time)
             </div>
         </div>
         <script src="../prettify.js"></script>

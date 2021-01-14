@@ -2,7 +2,6 @@ import { Syntax } from "esprima";
 import estree from "estree";
 import { MutationOperator } from "./base/MutationOperator";
 import { Rand } from "../random/rand";
-import * as filters from "./filters/filters";
 
 
 export class ExprStatementRemoverOperator extends MutationOperator {
@@ -21,30 +20,34 @@ export class ExprStatementRemoverOperator extends MutationOperator {
     }
 
     protected _operator(node: estree.ExpressionStatement, metadata: any): void {
-        if (this.is_buggy_line(metadata)) {
+        if (this.is_buggy_line(metadata, false)) {
             if (node.type === Syntax.ExpressionStatement) {
                 this._nodes.push(node);
                 this._meta.push(metadata);
+                this.stash(node, metadata);
             }
         }
     }
 
     protected _generate_patch(): string {
         if (this._err !== null)
-            return super.code;
+            return super.cleaned_code;
 
-        if (this._nodes.length > 0) {
+        let nodes = this._nodes.filter(value => { return super.node_id(value) === 0; });
+        let metadata = this._meta.filter(value => { return super.node_id(value) === 0; });
+
+        if (nodes.length > 0) {
             // possibly always be 0, but who knows...
             // in case of multiple expressions in one line
-            const index = Rand.range(this._nodes.length);
+            const index = Rand.range(nodes.length);
 
-            const node = this._nodes[index];
-            const meta = this._meta[index];
+            const node = nodes[index];
+            const meta = metadata[index];
 
-            return super.code.slice(0, meta.start.offset) +
-                super.code.slice(meta.end.offset);
+            return super.cleaned_code.slice(0, meta.start.offset) +
+                super.cleaned_code.slice(meta.end.offset);
         }
 
-        return super.code;
+        return super.cleaned_code;
     }
 }

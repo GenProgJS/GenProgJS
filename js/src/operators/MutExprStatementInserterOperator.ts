@@ -28,7 +28,7 @@ export class MutExprStatementInserterOperator extends MutationOperator {
     }
 
     protected _operator(node: estree.Node, metadata: any): void {
-        if (this.is_buggy_line(metadata)) {
+        if (this.is_buggy_line(metadata, false)) {
             if (node.type === Syntax.ExpressionStatement) {
                 this._buggy_statements.push(node);
                 this._buggy_statements_meta.push(metadata);
@@ -36,19 +36,24 @@ export class MutExprStatementInserterOperator extends MutationOperator {
         }
         this._nodes.push(node);
         this._meta.push(metadata);
+
+        this.stash(node, metadata);
     }
 
     protected _generate_patch(): string {
         if (this._err !== null)
-            return super.code;
+            return super.cleaned_code;
 
-        if (this._buggy_statements.length > 0) {
+        let buggy_statements = this._buggy_statements.filter(value => { return super.node_id(value) === 0; });
+        let buggy_statements_meta = this._buggy_statements_meta.filter(value => { return super.node_id(value) === 0; });
+    
+        if (buggy_statements.length > 0) {
             // possibly always be 0, but who knows...
             // in case of multiple expressions in one line
-            const index = Rand.range(this._buggy_statements.length);
+            const index = Rand.range(buggy_statements.length);
 
-            const bug = this._buggy_statements[index];
-            const bug_meta = this._buggy_statements_meta[index];
+            const bug = buggy_statements[index];
+            const bug_meta = buggy_statements_meta[index];
 
             let nodes, metadata;
             [nodes, metadata] = filters.filter_by_offset(this._nodes, this._meta,
@@ -75,7 +80,7 @@ export class MutExprStatementInserterOperator extends MutationOperator {
             }
             catch (err) {
                 this._err = err;
-                return super.code;
+                return super.cleaned_code;
             }
 
             if (new_node) {
@@ -84,16 +89,16 @@ export class MutExprStatementInserterOperator extends MutationOperator {
                 const patch = gencode(escodegen, new_node);
 
                 if (befter) {
-                    return super.code.slice(0, bug_meta.start.offset) +
-                        patch + '\n' + super.code.slice(bug_meta.start.offset);
+                    return super.cleaned_code.slice(0, bug_meta.start.offset) +
+                        patch + '\n' + super.cleaned_code.slice(bug_meta.start.offset);
                 }
                 else {
-                    return super.code.slice(0, bug_meta.end.offset) +
-                        '\n' + patch + super.code.slice(bug_meta.end.offset);
+                    return super.cleaned_code.slice(0, bug_meta.end.offset) +
+                        '\n' + patch + super.cleaned_code.slice(bug_meta.end.offset);
                 }
             }
         }
 
-        return super.code;
+        return super.cleaned_code;
     }
 }

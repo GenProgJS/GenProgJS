@@ -35,7 +35,7 @@ class NullCheckOperator extends MutationOperator_1.MutationOperator {
         super._init();
     }
     _operator(node, metadata) {
-        if (this.is_buggy_line(metadata)) {
+        if (this.is_buggy_line(metadata, false)) {
             if (node.type === esprima_1.Syntax.MemberExpression) {
                 this._members.push(node);
                 this._members_meta.push(metadata);
@@ -45,50 +45,46 @@ class NullCheckOperator extends MutationOperator_1.MutationOperator {
                 this._calls_meta.push(metadata);
             }
             else if (node.type === esprima_1.Syntax.Identifier) {
-                let left = metadata.start.offset > 0 && super.code[metadata.start.offset - 1] === '.';
-                let right = super.code[metadata.end.offset] === '.' || super.code[metadata.end.offset] === '(';
-                if (!(left || right)) {
-                    this._idents.push(node);
-                    this._idents_meta.push(metadata);
-                }
+                this._idents.push(node);
+                this._idents_meta.push(metadata);
             }
             else if (node.type === esprima_1.Syntax.UnaryExpression) {
                 this._unaries.push(node);
                 this._unaries_meta.push(metadata);
             }
         }
+        if (node.type === esprima_1.Syntax.MemberExpression || node.type === esprima_1.Syntax.CallExpression ||
+            node.type === esprima_1.Syntax.Identifier || node.type === esprima_1.Syntax.UnaryExpression) {
+            this.stash(node, metadata);
+        }
     }
     _generate_patch() {
         if (this._err !== null)
-            return super.code;
-        if (this._members.length > 0 ||
-            this._idents.length > 0 ||
-            this._unaries.length > 0 ||
-            this._calls.length > 0) {
-            let everyone = [];
-            let everyone_meta = [];
-            everyone = everyone.concat(this._idents).concat(this._members)
-                .concat(this._unaries).concat(this._calls);
-            everyone_meta = everyone_meta.concat(this._idents_meta).concat(this._members_meta)
-                .concat(this._unaries_meta).concat(this._calls_meta);
-            [everyone, everyone_meta] = filters.filter_lower_orders(everyone, everyone_meta);
-            if (everyone.length > 0) {
-                let rand = rand_1.Rand.range(0, everyone.length);
-                const node = everyone[rand];
-                const meta = everyone_meta[rand];
-                let patch = super.code.slice(meta.start.offset, meta.end.offset);
-                patch += " && ";
-                patch = Math.random() < 0.5 ? patch : '!' + patch;
-                // kill generated redundant logical negates
-                if (patch.indexOf('!!', 0) === 0) {
-                    patch = patch.slice(2, patch.length);
-                }
-                // insert before
-                return super.code.slice(0, meta.start.offset) +
-                    patch + super.code.slice(meta.start.offset);
+            return super.cleaned_code;
+        let everyone = [];
+        let everyone_meta = [];
+        everyone = everyone.concat(this._idents).concat(this._members)
+            .concat(this._unaries).concat(this._calls);
+        everyone_meta = everyone_meta.concat(this._idents_meta).concat(this._members_meta)
+            .concat(this._unaries_meta).concat(this._calls_meta);
+        if (everyone.length > 0) {
+            [everyone, everyone_meta] = filters.remove_duplicates(everyone, everyone_meta);
+            //[everyone, everyone_meta] = filters.filter_lower_orders(everyone, everyone_meta);
+            let rand = rand_1.Rand.range(everyone.length);
+            const node = everyone[rand];
+            const meta = everyone_meta[rand];
+            let patch = super.node_code(meta);
+            patch += " && ";
+            patch = Math.random() < 0.5 ? patch : '!' + patch;
+            // kill generated redundant logical negates
+            if (patch.indexOf('!!', 0) === 0) {
+                patch = patch.slice(2, patch.length);
             }
+            // insert before
+            return super.cleaned_code.slice(0, meta.start.offset) +
+                patch + super.cleaned_code.slice(meta.start.offset);
         }
-        return super.code;
+        return super.cleaned_code;
     }
 }
 exports.NullCheckOperator = NullCheckOperator;

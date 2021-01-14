@@ -20,7 +20,7 @@ def main():
     initial_individual.set_args(args)
     initial_individual.checkout()
 
-    with open(args["file"]) as f:
+    with open(args["file"], encoding='utf-8') as f:
         original_code = f.readlines()
     original_code = [x.strip() for x in original_code]
 
@@ -29,20 +29,40 @@ def main():
 
     Logger.print_project_info(args, initial_individual)
 
-    operators = [Operator(name="CallChangerOperator", probability=0.8),
+    operators = [Operator(name="ArithmeticBinaryOperatorChanger", probability=0.8),
+                 Operator(name="ArraySubscripterOperator", probability=0.8),
+                 Operator(name="AsyncFunctionOperator", probability=0.8),
+                 Operator(name="AwaitInserterOperator", probability=0.8),
+                 Operator(name="BinaryOperatorChanger", probability=0.8),
+                 Operator(name="BitwiseBinaryOperatorChanger", probability=0.8),
+                 Operator(name="CallChangerOperator", probability=0.8),
+                 Operator(name="ConditionalBinaryOperatorChanger", probability=0.8),
                  Operator(name="ConditionalChangerOperator", probability=0.8),
-                 Operator(name="ConditionalInverterOperator", probability=0.8),
-                 Operator(name="ConditionalTypeChangerOperator", probability=0.8),
+                 Operator(name="DeclarationChangerOperator", probability=0.8),
+                 Operator(name="EvalMutationOperator", probability=0.8),
                  Operator(name="ExprReplacerOperator", probability=0.8),
                  Operator(name="ExprStatementChangerOperator", probability=0.8),
                  Operator(name="ExprStatementInserterOperator", probability=0.8),
                  Operator(name="ExprStatementRemoverOperator", probability=0.8),
+                 Operator(name="FunctionCallRemoverOperator", probability=0.8),
+                 Operator(name="FunctionCallRemoverOperator", probability=0.8),
+                 Operator(name="FunctionMakerOperator", probability=0.8),
+                 Operator(name="IfElseChangerOperator", probability=0.8),
                  Operator(name="LogicalExprChangerOperator", probability=0.8),
-                 Operator(name="MutExprStatementInserterOperator", probability=0.8),
+                 Operator(name="LoopFixOperator", probability=0.8),
                  Operator(name="MutExprStatementChangerOperator", probability=0.8),
+                 Operator(name="MutExprStatementInserterOperator", probability=0.8),
                  Operator(name="NullCheckOperator", probability=0.8),
                  Operator(name="NumberChangerOperator", probability=0.8),
                  Operator(name="ReturnInsertOperator", probability=0.8),
+                 Operator(name="ReturnNoneOperator", probability=0.8),
+                 Operator(name="ShiftOperatorChanger", probability=0.8),
+                 Operator(name="StringChangerOperator", probability=0.8),
+                 Operator(name="SwitchCaseChangerOperator", probability=0.8),
+                 Operator(name="SwitchChangerOperator", probability=0.8),
+                 Operator(name="TernaryChangerOperator", probability=0.8),
+                 Operator(name="TryCatcherOperator", probability=0.8),
+                 Operator(name="UpdateExpressionChangerOperator", probability=0.8),
                  Operator(name="VarChangerOperator", probability=0.8)
     ]
 
@@ -83,6 +103,8 @@ def handle_params():
                         help='Max size of repair candidates, if stop_crit == \"size\" (see -c)')
     parser.add_argument('-mt', '--max_time', default=str(Parameters.MAX_TIME),
                         help='Max running time, if stop_crit == \"time\" (see -c)')
+    parser.add_argument('-dp', '--drop_plausible', default=str(Parameters.DROP_PLAUSIBLE), choices={'True', 'False'},
+                        help='Drop plausible patch from the population, so it won\'t affect later generations.')
 
     param_dict = {}
     args = parser.parse_args()
@@ -92,7 +114,7 @@ def handle_params():
     if param_dict["project"] == 'Node-redis':
         param_dict["project"] = 'Node_redis'
 
-    with open('data/bugsjs-bugs.json') as json_file:
+    with open('data/bugsjs-bugs.json', encoding='utf-8') as json_file:
         data = json.load(json_file)
         for p in data:
             if p['project'] == param_dict['project'] and int(p['bugId']) == int(param_dict['bug-ID']):
@@ -112,6 +134,7 @@ def handle_params():
     Parameters.MAX_GENERATIONS = int(args.max_gen)
     Parameters.MAX_SIZE = int(args.max_size)
     Parameters.MAX_TIME = int(args.max_time)
+    Parameters.DROP_PLAUSIBLE = bool(args.drop_plausible)
     
     if '' == args.output:
         Parameters.OUTPUT_DIR = args.project.lower() + '_' + str(args.bug_ID)

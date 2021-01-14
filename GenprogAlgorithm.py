@@ -90,6 +90,9 @@ class GenprogAlgorithm(object):
                     individual.set_generation(self.generation)
                     self.repaired_programs.append(individual)
 
+                    if Parameters.DROP_PLAUSIBLE:
+                        self.population.remove(individual)
+
         self.population.sort(key=lambda ind: ind.get_fitness(), reverse=False)
 
         if len(self.population) > Parameters.POPULATION_SIZE:

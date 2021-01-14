@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const esprima_1 = require("esprima");
+const escodegen_1 = __importDefault(require("escodegen"));
 /**
  * @brief filter_duplicate_numerics - function to filter duplicate elements:
  * a numeric Literal will be filtered if the passed array contains
@@ -138,20 +142,25 @@ function filter_expr_type(nodes, metadata, expr_type) {
         return [[], []];
     if (expr_type === undefined)
         throw TypeError("undefined expression type passed");
+    let expr_filter;
+    if (expr_type instanceof String)
+        expr_filter = [expr_type];
+    else
+        expr_filter = expr_type;
     let filtered = [], filtered_meta = [];
     for (let i = 0; i < nodes.length; ++i) {
         const node = nodes[i];
         // ExpressionStatements case
         if (node.expression) {
             const expr_statement = node;
-            if (expr_statement.expression.type === expr_type) {
+            if (expr_filter.includes(expr_statement.expression.type)) {
                 const meta = metadata[i];
                 filtered.push(node);
                 filtered_meta.push(meta);
             }
         }
         // Simple Expressions case
-        else if (node.type === expr_type) {
+        else if (expr_filter.includes(node.type)) {
             const meta = metadata[i];
             filtered.push(node);
             filtered_meta.push(meta);
@@ -280,3 +289,116 @@ function filter_between(nodes, metadata, left, right) {
     return [filtered, filtered_meta];
 }
 exports.filter_between = filter_between;
+function keep_between(nodes, metadata, left, right) {
+    if (!nodes || nodes.length <= 0 ||
+        !metadata || metadata.length <= 0)
+        return [[], []];
+    if (isNaN(left) || isNaN(right))
+        throw TypeError("left and right offset must be defined");
+    let filtered = [], filtered_meta = [];
+    for (let i = 0; i < nodes.length; ++i) {
+        const meta = metadata[i];
+        if (meta.start.offset >= left && meta.end.offset <= right) {
+            const node = nodes[i];
+            filtered.push(node);
+            filtered_meta.push(meta);
+        }
+    }
+    return [filtered, filtered_meta];
+}
+exports.keep_between = keep_between;
+function is_inside(check_this, inside) {
+    if (check_this.start.offset >= inside.start.offset &&
+        check_this.end.offset <= inside.end.offset)
+        return true;
+    return false;
+}
+function remove_call_identifiers(nodes, metadata) {
+    if (!nodes || nodes.length <= 0 ||
+        !metadata || metadata.length <= 0)
+        return [[], []];
+    let filtered = [], filtered_meta = [];
+    let call_meta = [];
+    // get call positions (metadata)
+    // we will filter by them
+    for (let i = 0; i < nodes.length; ++i) {
+        let node = nodes[i];
+        let meta = metadata[i];
+        if (node.type === esprima_1.Syntax.CallExpression) {
+            call_meta.push(meta);
+        }
+    }
+    metadata.forEach((meta, index) => {
+        let found = false;
+        let node = nodes[index];
+        for (let i = 0; i < call_meta.length; ++i) {
+            let cmeta = call_meta[i];
+            if (is_inside(meta, cmeta)) {
+                found = true;
+                break;
+            }
+        }
+        if (!found && node.type !== esprima_1.Syntax.CallExpression) {
+            filtered.push(node);
+            filtered_meta.push(meta);
+        }
+    });
+    return [filtered, filtered_meta];
+}
+exports.remove_call_identifiers = remove_call_identifiers;
+/**
+ * @brief remove_duplicates - removes duplicate nodes, by generating a string represetation
+ * of the AST node and comparing them
+ *
+ * @param nodes
+ * @param metadata
+ *
+ * @return duplicate free list of nodes
+ */
+function remove_duplicates(nodes, metadata) {
+    if (!nodes || nodes.length <= 0 ||
+        !metadata || metadata.length <= 0)
+        return [[], []];
+    let filtered = [], filtered_meta = [];
+    let call_meta = [];
+    nodes.forEach((value, index) => {
+        let duplicate = false;
+        let code_string = escodegen_1.default.generate(value);
+        for (let i = 0; i < filtered.length; ++i) {
+            let find_me = escodegen_1.default.generate(filtered[i]);
+            if (find_me === code_string) {
+                duplicate = true;
+                break;
+            }
+        }
+        if (!duplicate) {
+            filtered.push(value);
+            filtered_meta.push(metadata[index]);
+        }
+    });
+    return [filtered, filtered_meta];
+}
+exports.remove_duplicates = remove_duplicates;
+function filter_type(nodes, metadata, type) {
+    if (!nodes || nodes.length <= 0 ||
+        !metadata || metadata.length <= 0)
+        return [[], []];
+    if (type === undefined)
+        throw TypeError("undefined expression type passed");
+    let type_filter;
+    if (type instanceof String)
+        type_filter = [type];
+    else
+        type_filter = type;
+    let filtered = [], filtered_meta = [];
+    for (let i = 0; i < nodes.length; ++i) {
+        const node = nodes[i];
+        if (type_filter.includes(node.type)) {
+            const meta = metadata[i];
+            filtered.push(node);
+            filtered_meta.push(meta);
+        }
+    }
+    return [filtered, filtered_meta];
+}
+exports.filter_type = filter_type;

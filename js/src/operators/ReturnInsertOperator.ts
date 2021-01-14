@@ -20,17 +20,23 @@ export class ReturnInsertOperator extends MutationOperator {
     }
 
     protected _operator(node: estree.ExpressionStatement, metadata: any): void {
-        if (this.is_buggy_line(metadata)) {
+        if (this.is_buggy_line(metadata, false)) {
             if (node.type === Syntax.ExpressionStatement) {
                 this._nodes.push(node);
                 this._meta.push(metadata);
+
+                this.stash(node, metadata);
             }
         }
     }
 
     protected _generate_patch(): string {
         if (this._err !== null)
-            return super.code;
+            return super.cleaned_code;
+
+        this._nodes = this._nodes.filter(value => { return super.node_id(value) === 0; });
+        this._meta = this._meta.filter(value => { return super.node_id(value) === 0; });
+
 
         if (this._nodes.length > 0) {
             // possibly always be 0, but who knows...
@@ -40,10 +46,10 @@ export class ReturnInsertOperator extends MutationOperator {
             const node = this._nodes[index];
             const meta = this._meta[index];
 
-            return super.code.slice(0, meta.start.offset) +
-                "return " + super.code.slice(meta.start.offset);
+            return super.cleaned_code.slice(0, meta.start.offset) +
+                "return " + super.cleaned_code.slice(meta.start.offset);
         }
 
-        return super.code;
+        return super.cleaned_code;
     }
 }

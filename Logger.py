@@ -19,7 +19,7 @@ def genprog_failed():
 
 def print_project_info(args, individual):
     if Parameters.VERBOSE > 0:
-        print("\nFixing bugs for project " + args["project"] + ", bug-ID: " + args["bug-ID"])
+        print('\nFixing bugs for project ' + args['project'] + ', bug-ID: ' + args['bug-ID'])
         print('---------------------------------- Buggy line ----------------------------------')
         print(individual.get_modified_line())
         print('--------------------------------------------------------------------------------')
@@ -31,16 +31,16 @@ def write_to_file(population):
             os.makedirs(Parameters.OUTPUT_DIR)
         for individual in population:
             args = individual.get_args()
-            filename = args["project"] + "_" + str(args["bug-ID"]) + "_" + str(Parameters.CANDIDATE_INDEX)
+            filename = args['project'] + '_' + str(args['bug-ID']) + '_' + str(Parameters.CANDIDATE_INDEX)
             Parameters.CANDIDATE_INDEX += 1
 
-            with open(Parameters.OUTPUT_DIR + '/' + filename + '.js', 'w') as file:
+            with open(Parameters.OUTPUT_DIR + '/' + filename + '.js', 'w', encoding='utf-8') as file:
                 file.write("\n".join(individual.get_code()) + "\n")
 
-            with open(Parameters.OUTPUT_DIR + '/' + filename + '.info', 'w') as file:
+            with open(Parameters.OUTPUT_DIR + '/' + filename + '.info', 'w', encoding='utf-8') as file:
                 file.write('Generation: ' + str(individual.get_generation()) + '\n')
                 file.write('Elapsed time: ' + str(individual.get_repair_time()) + 'sec\n')
-                file.write('# of failed test cases in buggy version: ' + individual.get_test_stat("buggy", "fixed") + '\n')
+                file.write('# of failed test cases in developer-fixed version: ' + str(individual.get_test_stat('buggy', 'failed')) + '\n')
                 file.write('# of failed test cases in current version: ' + str(individual.get_failed_tests()) + '\n')
                 file.write('List of applied operators:\n' + '\n'.join(individual.get_applied_operators()))
 
@@ -60,7 +60,7 @@ def log_statistics(best, worst, population, candidate_number, i, elapsed_time):
         print(statistics)
 
     if Parameters.LOG_LEVEL > 0:
-        with open(Parameters.OUTPUT_DIR + '/general_info.log', 'a') as file:
+        with open(Parameters.OUTPUT_DIR + '/general_info.log', 'a', encoding='utf-8') as file:
             file.write(statistics)
 
 
@@ -107,7 +107,7 @@ def log_general_info(elapsed_time, num_candidates, args):
         print(general_info)
 
     if Parameters.LOG_LEVEL > 0:
-        with open(Parameters.OUTPUT_DIR + '/general_info.log', 'a') as file:
+        with open(Parameters.OUTPUT_DIR + '/general_info.log', 'a', encoding='utf-8') as file:
             file.write(general_info)
 
 

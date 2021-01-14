@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const lodash_1 = require("lodash");
 /**
  * @brief _extractor - class from extracting nested nodes of a kind from a single node
  */
 class _extractor {
-    constructor(types) {
+    constructor(types = undefined) {
         if (types instanceof Array)
             this._types = types;
         else if (typeof types === 'string')
@@ -14,6 +15,14 @@ class _extractor {
     }
     from(node) {
         let nested = [];
+        if (node.type != null) {
+            for (let i = 0; i < this._types.length; ++i) {
+                if (node.type.indexOf(this._types[i]) >= 0) {
+                    nested.push(node);
+                    break;
+                }
+            }
+        }
         // visit every nested node recursively
         if (node instanceof Object) {
             this._deep_visit(node, nested);
@@ -23,8 +32,8 @@ class _extractor {
     /**
      * @brief _deep_visit - recursively visits nested nodes of a node
      *
-     * @param {Node} node - the node to extract from
-     * @param {Array<Node>} result - a valid array that will contain the results
+     * @param {estree.Node} node - the node to extract from
+     * @param {Array<estree.Node>} result - a valid array that will contain the results
      */
     _deep_visit(node, result) {
         // if the node passed is not a default Object instance, but still an object, then continue the recursion
@@ -55,7 +64,7 @@ class _extractor {
     }
 }
 exports._extractor = _extractor;
-function _extract(types) {
+function _extract(types = undefined) {
     return new _extractor(types);
 }
 exports._extract = _extract;
@@ -72,3 +81,21 @@ function _type_filter_callback(nodes, types) {
     });
 }
 exports._type_filter_callback = _type_filter_callback;
+function _get_metadata(nodes) {
+    var _a, _b;
+    if (nodes.length === 0) {
+        return [];
+    }
+    let meta = [];
+    for (let node of nodes) {
+        if (!lodash_1.isArray(node.range)) {
+            throw Error("getting metadata failed: node list element does not contain range information");
+        }
+        meta.push({
+            start: { offset: (_a = node.range) === null || _a === void 0 ? void 0 : _a[0] },
+            end: { offset: (_b = node.range) === null || _b === void 0 ? void 0 : _b[1] }
+        });
+    }
+    return meta;
+}
+exports._get_metadata = _get_metadata;

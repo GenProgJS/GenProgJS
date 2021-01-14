@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">39.29% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>17/51</span>
+                <span class='fraction'>22/56</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">36% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>9/27</span>
+                <span class='fraction'>9/25</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">20% </span>
+                <span class="strong">28.57% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/5</span>
+                <span class='fraction'>2/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">27.66% </span>
+                <span class="strong">36% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>13/47</span>
+                <span class='fraction'>18/50</span>
             </div>
         
             
@@ -148,11 +148,11 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -167,20 +167,20 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -222,12 +222,12 @@ const rand_1 = require("../random/rand");
 const filters = __importStar(require("./filters/filters"));
 const config = __importStar(require("./config/config.json"));
 class ExprStatementInserterOperator extends MutationOperator_1.MutationOperator {
-<span class="fstat-no" title="function not covered" >    co</span>nstructor(code, buggy_line) {
-<span class="cstat-no" title="statement not covered" >        super(code, buggy_line);</span>
-<span class="cstat-no" title="statement not covered" >        this._statements = [];</span>
-<span class="cstat-no" title="statement not covered" >        this._statements_meta = [];</span>
-<span class="cstat-no" title="statement not covered" >        this._buggy_statements = [];</span>
-<span class="cstat-no" title="statement not covered" >        this._buggy_statements_meta = [];</span>
+    constructor(code, buggy_line) {
+        super(code, buggy_line);
+        this._statements = [];
+        this._statements_meta = [];
+        this._buggy_statements = [];
+        this._buggy_statements_meta = [];
     }
 <span class="fstat-no" title="function not covered" >    _i</span>nit() {
 <span class="cstat-no" title="statement not covered" >        this._buggy_statements = [];</span>
@@ -237,28 +237,28 @@ class ExprStatementInserterOperator extends MutationOperator_1.MutationOperator 
 <span class="cstat-no" title="statement not covered" >        super._init();</span>
     }
 <span class="fstat-no" title="function not covered" >    _o</span>perator(node, metadata) {
-<span class="cstat-no" title="statement not covered" >        if (this.is_buggy_line(metadata)) {</span>
-<span class="cstat-no" title="statement not covered" >            if (node.type === esprima_1.Syntax.ExpressionStatement) {</span>
+<span class="cstat-no" title="statement not covered" >        if (node.type === esprima_1.Syntax.ExpressionStatement) {</span>
+<span class="cstat-no" title="statement not covered" >            if (this.is_buggy_line(metadata, false)) {</span>
 <span class="cstat-no" title="statement not covered" >                this._buggy_statements.push(node);</span>
 <span class="cstat-no" title="statement not covered" >                this._buggy_statements_meta.push(metadata);</span>
             }
-        }
-        else {
-<span class="cstat-no" title="statement not covered" >            if (node.type === esprima_1.Syntax.ExpressionStatement) {</span>
-<span class="cstat-no" title="statement not covered" >                this._statements.push(node);</span>
-<span class="cstat-no" title="statement not covered" >                this._statements_meta.push(metadata);</span>
-            }
+<span class="cstat-no" title="statement not covered" >            this._statements.push(node);</span>
+<span class="cstat-no" title="statement not covered" >            this._statements_meta.push(metadata);</span>
+<span class="cstat-no" title="statement not covered" >            this.stash(node, metadata);</span>
         }
     }
 <span class="fstat-no" title="function not covered" >    _g</span>enerate_patch() {
 <span class="cstat-no" title="statement not covered" >        if (this._err !== null)</span>
-<span class="cstat-no" title="statement not covered" >            return super.code;</span>
-<span class="cstat-no" title="statement not covered" >        if (this._buggy_statements.length &gt; 0 &amp;&amp; this._statements.length &gt; 0) {</span>
+<span class="cstat-no" title="statement not covered" >            return super.cleaned_code;</span>
+        let buggy_statements = <span class="cstat-no" title="statement not covered" >this._buggy_statements.filter(<span class="fstat-no" title="function not covered" >va</span>lue =&gt; { <span class="cstat-no" title="statement not covered" >return super.node_id(value) === 0; </span>});</span>
+        let buggy_statements_meta = <span class="cstat-no" title="statement not covered" >this._buggy_statements_meta.filter(<span class="fstat-no" title="function not covered" >va</span>lue =&gt; { <span class="cstat-no" title="statement not covered" >return super.node_id(value) === 0; </span>});</span>
+<span class="cstat-no" title="statement not covered" >        if (buggy_statements.length &gt; 0 &amp;&amp; this._statements.length &gt; 0) {</span>
             // possibly always be 0, but who knows...
             // in case of multiple expressions in one line
-            const index = <span class="cstat-no" title="statement not covered" >rand_1.Rand.range(this._buggy_statements.length);</span>
-            const node = <span class="cstat-no" title="statement not covered" >this._buggy_statements[index];</span>
-            const meta = <span class="cstat-no" title="statement not covered" >this._buggy_statements_meta[index];</span>
+            const index = <span class="cstat-no" title="statement not covered" >rand_1.Rand.range(buggy_statements.length);</span>
+            const node = <span class="cstat-no" title="statement not covered" >buggy_statements[index];</span>
+            const meta = <span class="cstat-no" title="statement not covered" >buggy_statements_meta[index];</span>
+<span class="cstat-no" title="statement not covered" >            [this._statements, this._statements_meta] = filters.remove_duplicates(this._statements, this._statements_meta);</span>
             let insertion, insertion_meta;
 <span class="cstat-no" title="statement not covered" >            [insertion, insertion_meta] = filters.filter_by_offset(this._statements, this._statements_meta, meta, config.left_offset_threshold, config.right_offset_threshold);</span>
 <span class="cstat-no" title="statement not covered" >            if (insertion.length &gt; 0) {</span>
@@ -267,18 +267,18 @@ class ExprStatementInserterOperator extends MutationOperator_1.MutationOperator 
                 const ins_index = <span class="cstat-no" title="statement not covered" >rand_1.Rand.range(insertion.length);</span>
 <span class="cstat-no" title="statement not covered" >                insertion = insertion[ins_index];</span>
 <span class="cstat-no" title="statement not covered" >                insertion_meta = insertion_meta[ins_index];</span>
-                const patch = <span class="cstat-no" title="statement not covered" >super.code.slice(insertion_meta.start.offset, insertion_meta.end.offset);</span>
+                const patch = <span class="cstat-no" title="statement not covered" >super.node_code(insertion);</span>
 <span class="cstat-no" title="statement not covered" >                if (befter) {</span>
-<span class="cstat-no" title="statement not covered" >                    return super.code.slice(0, meta.start.offset) +</span>
+<span class="cstat-no" title="statement not covered" >                    return super.cleaned_code.slice(0, meta.start.offset) +</span>
                         patch + '\n' + super.code.slice(meta.start.offset);
                 }
                 else {
-<span class="cstat-no" title="statement not covered" >                    return super.code.slice(0, meta.end.offset) +</span>
+<span class="cstat-no" title="statement not covered" >                    return super.cleaned_code.slice(0, meta.end.offset) +</span>
                         '\n' + patch + super.code.slice(meta.end.offset);
                 }
             }
         }
-<span class="cstat-no" title="statement not covered" >        return super.code;</span>
+<span class="cstat-no" title="statement not covered" >        return super.cleaned_code;</span>
     }
 }
 exports.ExprStatementInserterOperator = ExprStatementInserterOperator;
@@ -289,7 +289,7 @@ exports.ExprStatementInserterOperator = ExprStatementInserterOperator;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Sun Apr 19 2020 10:58:17 GMT+0200 (Central European Summer Time)
+                at Thu Jul 16 2020 19:26:18 GMT+0200 (Central European Summer Time)
             </div>
         </div>
         <script src="../prettify.js"></script>

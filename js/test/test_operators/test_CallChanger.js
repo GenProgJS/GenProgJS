@@ -136,15 +136,5 @@ describe(msg.message(op.CallChangerOperator), function () {
 
         let code = mocking._generate_patch();
         expect(code).to.equal(program_v1);
-
-        mocking._calls = ["Not empty."];
-        mocking._calls_meta = ["Not empty"];
-        mocking._idents = [];
-        mocking._idents_meta = [];
-        mocking._members = [];
-        mocking._members_meta = [];
-
-        code = mocking._generate_patch();
-        expect(code).to.equal(program_v1);
     });
 });

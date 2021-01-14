@@ -5,8 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const readline_1 = __importDefault(require("readline"));
 const fs_1 = __importDefault(require("fs"));
-const ops_json_1 = require("../operators/info/ops.json");
-exports.ops_t = ops_json_1.operators;
+//import { operators as ops_t} from "../operators/info/ops.json";
 const ops_1 = require("../operators/info/ops");
 exports.ops = ops_1.ops;
 const MutationOperator_1 = require("../operators/base/MutationOperator");
@@ -22,12 +21,14 @@ function run_operator(operatorClass) {
     }
     const basename = path_1.default.basename(filename, path_1.default.extname(filename));
     const out_file = path_1.default.dirname(filename) + path_1.default.sep + basename + ".potential";
-    const readInterface = readline_1.default.createInterface(fs_1.default.createReadStream(filename));
+    const readInterface = readline_1.default.createInterface({
+        input: fs_1.default.createReadStream(filename)
+    });
     let cwd = process.cwd();
     let index = -1;
     // read up to 2 arguments
     let parents = new Array();
-    readInterface.on('line', function(line) {
+    readInterface.on('line', function (line) {
         if (index === -1) {
             index = parseInt(line);
         }
@@ -74,13 +75,12 @@ function write_code_to_file(operator, out_file) {
 }
 function run_all() {
     let runs = 0;
-    for (let i = 0; i < ops_json_1.operators.length; ++i) {
-        const op_t = ops_json_1.operators[i];
-        const op_class = ops_1.ops[op_t];
+    for (const key in ops_1.ops) {
+        const op_class = ops_1.ops(key);
         if (op_class !== undefined) {
             run_operator(op_class);
+            ++runs;
         }
-        ++runs;
     }
 }
 exports.run_all = run_all;

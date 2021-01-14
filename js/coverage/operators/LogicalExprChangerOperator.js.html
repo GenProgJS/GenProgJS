@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">21.43% </span>
+                <span class="strong">27.27% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>6/28</span>
+                <span class='fraction'>9/33</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">16.67% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>1/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">21.43% </span>
+                <span class="strong">29.03% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>6/28</span>
+                <span class='fraction'>9/31</span>
             </div>
         
             
@@ -107,20 +107,21 @@
 <a name='L48'></a><a href='#L48'>48</a>
 <a name='L49'></a><a href='#L49'>49</a>
 <a name='L50'></a><a href='#L50'>50</a>
-<a name='L51'></a><a href='#L51'>51</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -136,11 +137,14 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -162,15 +166,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const esprima_1 = require("esprima");
 const MutationOperator_1 = require("./base/MutationOperator");
 const rand_1 = require("../random/rand");
-// TODO: is this all?
 const mutations = [
     "||", "&amp;&amp;"
 ];
 class LogicalExprChangerOperator extends MutationOperator_1.MutationOperator {
-<span class="fstat-no" title="function not covered" >    co</span>nstructor(code, buggy_line) {
-<span class="cstat-no" title="statement not covered" >        super(code, buggy_line);</span>
-<span class="cstat-no" title="statement not covered" >        this._logicals = [];</span>
-<span class="cstat-no" title="statement not covered" >        this._logicals_meta = [];</span>
+    constructor(code, buggy_line) {
+        super(code, buggy_line);
+        this._logicals = [];
+        this._logicals_meta = [];
     }
 <span class="fstat-no" title="function not covered" >    _i</span>nit() {
 <span class="cstat-no" title="statement not covered" >        this._logicals = [];</span>
@@ -178,32 +181,35 @@ class LogicalExprChangerOperator extends MutationOperator_1.MutationOperator {
 <span class="cstat-no" title="statement not covered" >        super._init();</span>
     }
 <span class="fstat-no" title="function not covered" >    _o</span>perator(node, metadata) {
-<span class="cstat-no" title="statement not covered" >        if (this.is_buggy_line(metadata)) {</span>
+<span class="cstat-no" title="statement not covered" >        if (this.is_buggy_line(metadata, false)) {</span>
             // filter for BinaryExpressions,
-            // this does NOT include LogicalExpressions like &amp;&amp; and ||
+            // only for logical expression like &amp;&amp; and ||
 <span class="cstat-no" title="statement not covered" >            if (node.type === esprima_1.Syntax.LogicalExpression) {</span>
                 // if replaceable operator is in the list
 <span class="cstat-no" title="statement not covered" >                if (mutations.indexOf(node.operator) &gt;= 0) {</span>
 <span class="cstat-no" title="statement not covered" >                    this._logicals.push(node);</span>
 <span class="cstat-no" title="statement not covered" >                    this._logicals_meta.push(metadata);</span>
+<span class="cstat-no" title="statement not covered" >                    this.stash(node, metadata);</span>
                 }
             }
         }
     }
 <span class="fstat-no" title="function not covered" >    _g</span>enerate_patch() {
 <span class="cstat-no" title="statement not covered" >        if (this._err !== null)</span>
-<span class="cstat-no" title="statement not covered" >            return super.code;</span>
-<span class="cstat-no" title="statement not covered" >        if (this._logicals.length &gt; 0) {</span>
+<span class="cstat-no" title="statement not covered" >            return super.cleaned_code;</span>
+        let logicals = <span class="cstat-no" title="statement not covered" >this._logicals.filter(<span class="fstat-no" title="function not covered" >va</span>lue =&gt; { <span class="cstat-no" title="statement not covered" >return super.node_id(value) === 0; </span>});</span>
+        let logicals_meta = <span class="cstat-no" title="statement not covered" >this._logicals_meta.filter(<span class="fstat-no" title="function not covered" >va</span>lue =&gt; { <span class="cstat-no" title="statement not covered" >return super.node_id(value) === 0; </span>});</span>
+<span class="cstat-no" title="statement not covered" >        if (logicals.length &gt; 0) {</span>
             let patch = <span class="cstat-no" title="statement not covered" >mutations[rand_1.Rand.range(mutations.length)];</span>
-            const index = <span class="cstat-no" title="statement not covered" >rand_1.Rand.range(this._logicals.length);</span>
-            const node = <span class="cstat-no" title="statement not covered" >this._logicals[index];</span>
-            const meta = <span class="cstat-no" title="statement not covered" >this._logicals_meta[index];</span>
-            const logexpr = <span class="cstat-no" title="statement not covered" >super.code.slice(meta.start.offset, meta.end.offset);</span>
+            const index = <span class="cstat-no" title="statement not covered" >rand_1.Rand.range(logicals.length);</span>
+            const node = <span class="cstat-no" title="statement not covered" >logicals[index];</span>
+            const meta = <span class="cstat-no" title="statement not covered" >logicals_meta[index];</span>
+            const logexpr = <span class="cstat-no" title="statement not covered" >super.cleaned_code.slice(meta.start.offset, meta.end.offset);</span>
 <span class="cstat-no" title="statement not covered" >            patch = logexpr.replace(node.operator.toString(), patch);</span>
-<span class="cstat-no" title="statement not covered" >            return super.code.slice(0, meta.start.offset) +</span>
-                patch + super.code.slice(meta.end.offset);
+<span class="cstat-no" title="statement not covered" >            return super.cleaned_code.slice(0, meta.start.offset) +</span>
+                patch + super.cleaned_code.slice(meta.end.offset);
         }
-<span class="cstat-no" title="statement not covered" >        return super.code;</span>
+<span class="cstat-no" title="statement not covered" >        return super.cleaned_code;</span>
     }
 }
 exports.LogicalExprChangerOperator = LogicalExprChangerOperator;
@@ -214,7 +220,7 @@ exports.LogicalExprChangerOperator = LogicalExprChangerOperator;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Sun Apr 19 2020 10:58:17 GMT+0200 (Central European Summer Time)
+                at Thu Jul 16 2020 19:26:18 GMT+0200 (Central European Summer Time)
             </div>
         </div>
         <script src="../prettify.js"></script>

@@ -1,6 +1,6 @@
 import readline from "readline"
 import fs from "fs";
-import { operators as ops_t} from "../operators/info/ops.json";
+//import { operators as ops_t} from "../operators/info/ops.json";
 import { ops } from "../operators/info/ops";
 import { MutationOperatorConstructible, CrossoverOperatorConstructible, BaseOperator, Operator } from "../operators/base/BaseOperator";
 import { MutationOperator } from "../operators/base/MutationOperator";
@@ -8,7 +8,7 @@ import { CrossoverOperator } from "../operators/base/CrossoverOperator";
 import { ArgParser } from "../argparser/ArgParser";
 import path from "path";
 
-export { ops, ops_t };
+export { ops };
 
 
 export function run_operator(operatorClass: MutationOperatorConstructible | CrossoverOperatorConstructible) {
@@ -23,9 +23,7 @@ export function run_operator(operatorClass: MutationOperatorConstructible | Cros
     const out_file = path.dirname(filename) + path.sep + basename + ".potential";
 
     const readInterface = readline.createInterface({
-        input: fs.createReadStream(filename),
-        output: process.stdout,
-		console: false
+        input: fs.createReadStream(filename)
     });
 
     let cwd = process.cwd();
@@ -34,6 +32,7 @@ export function run_operator(operatorClass: MutationOperatorConstructible | Cros
     // read up to 2 arguments
     let parents = new Array<string>();
     readInterface.on('line', function(line) {
+
         if (index === -1) {
             index = parseInt(line);
         }
@@ -83,14 +82,13 @@ function write_code_to_file(operator: Operator, out_file: string) {
 
 export function run_all(): void {
     let runs = 0;
-    for (let i = 0; i < ops_t.length; ++i) {
-        const op_t = ops_t[i];
-        const op_class = ops[op_t];
+
+    for (const key in ops) {
+        const op_class = ops(key);
 
         if (op_class !== undefined) {
             run_operator(op_class);
+            ++runs;
         }
-
-        ++runs;
     }
 }

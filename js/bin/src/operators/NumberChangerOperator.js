@@ -32,6 +32,7 @@ class NumberChangerOperator extends MutationOperator_1.MutationOperator {
                 if (!isNaN(Number(node.value))) {
                     this._entries.push(node);
                     this._meta.push(metadata);
+                    this.stash(node, metadata);
                 }
             }
             else if (node.type === esprima_1.Syntax.UnaryExpression &&
@@ -39,17 +40,20 @@ class NumberChangerOperator extends MutationOperator_1.MutationOperator {
                 if (!isNaN(Number(node.argument.value))) {
                     this._entries.push(node);
                     this._meta.push(metadata);
+                    this.stash(node, metadata);
                 }
             }
         }
     }
     _generate_patch() {
         if (this._err !== null)
-            return super.code;
-        if (this._entries.length > 0) {
+            return super.cleaned_code;
+        let entries = this._entries.filter(value => { return super.node_id(value) === 0; });
+        let entries_meta = this._meta.filter(value => { return super.node_id(value) === 0; });
+        if (entries.length > 0) {
             let filt_entries = [];
             let filt_meta = [];
-            [filt_entries, filt_meta] = filters.filter_duplicate_numerics(this._entries, this._meta);
+            [filt_entries, filt_meta] = filters.filter_duplicate_numerics(entries, entries_meta);
             const rand = rand_1.Rand.range(filt_entries.length);
             const entry = filt_entries[rand];
             const meta = filt_meta[rand];
@@ -59,15 +63,15 @@ class NumberChangerOperator extends MutationOperator_1.MutationOperator {
             else if (entry.type === esprima_1.Syntax.UnaryExpression)
                 val = Number(entry.operator.concat(entry.argument.value));
             else
-                return super.code;
+                return super.cleaned_code;
             if (isNaN(val))
-                return super.code;
+                return super.cleaned_code;
             val += this._gen();
             let patch = val.toString();
-            return super.code.slice(0, meta.start.offset) +
-                patch + super.code.slice(meta.end.offset);
+            return super.cleaned_code.slice(0, meta.start.offset) +
+                patch + super.cleaned_code.slice(meta.end.offset);
         }
-        return super.code;
+        return super.cleaned_code;
     }
 }
 exports.NumberChangerOperator = NumberChangerOperator;

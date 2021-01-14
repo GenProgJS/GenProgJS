@@ -9,10 +9,10 @@ test_iter = 5
 describe(msg.message(op.VarChangerOperator), function () {
 
     const programs1 = [
-        "myvar1 = 5;\n\nmyvar2 = myvar1 * 3;\nmyfunc();\nobj.call()\n",
+        "myvar1 = 5;\n\nmyvar2 = myvar1 * 3;\n1+2;\nobj.call()\n",
 
-        "myvar1 = 5;\n\nmyvar1 = myvar1 * 3;\nmyfunc();\nobj.call()\n",
-        "myvar1 = 5;\n\nmyvar2 = myvar2 * 3;\nmyfunc();\nobj.call()\n"
+        "myvar1 = 5;\n\nmyvar1 = myvar1 * 3;\n1+2;\nobj.call()\n",
+        "myvar1 = 5;\n\nmyvar2 = myvar2 * 3;\n1+2;\nobj.call()\n"
     ];
 
     for (let i = 1; i <= test_iter; ++i) {
@@ -27,7 +27,7 @@ describe(msg.message(op.VarChangerOperator), function () {
     }
 
     it("Should leave program alone if, no variables found in specified line.", function () {
-        let mocking = new op.VarChangerOperator(programs1[0], 2);
+        let mocking = new op.VarChangerOperator(programs1[0], 4);
 
         mocking.operate()
         let code = mocking.code;

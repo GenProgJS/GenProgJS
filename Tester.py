@@ -38,5 +38,5 @@ myTest.run_test_command(myTest.get_command(param_dict, "Test command"))
 test_stat = myTest.get_test_stat()
 myTest.run_pre_and_post_command(myTest.get_command(param_dict, "Post-command"))
 
-with open(param_dict["filename"], 'w') as file:
+with open(param_dict["filename"], 'w', encoding='utf-8') as file:
     file.write("{ \"passes\": " + str(test_stat["passes"]) + ", \"failures\": " + str(test_stat["failures"]) + " }")

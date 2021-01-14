@@ -1,19 +1,18 @@
 import * as esprima from "esprima";
-import { Node } from "estree";
-
+import estree from "estree";
 import { CrossoverOperator } from "./base/CrossoverOperator";
 import { Rand } from "../random/rand";
 
 
 export class TreeCrossoverOperator extends CrossoverOperator {
-    _nodes1: Array<Node> = [];
-    _nodes2: Array<Node> = [];
+    _nodes1: Array<estree.Node> = [];
+    _nodes2: Array<estree.Node> = [];
     _meta1: Array<any> = [];
     _meta2: Array<any> = [];
 
     // used as pointer like variables
     // pointing to the above defined variables
-    _nodes: Array<Array<Node>> = [this._nodes1, this._nodes2];
+    _nodes: Array<Array<estree.Node>> = [this._nodes1, this._nodes2];
     _meta: Array<any> = [this._meta1, this._meta2];
 
 
@@ -34,7 +33,7 @@ export class TreeCrossoverOperator extends CrossoverOperator {
      * @param metadata
      * @private
      */
-    protected _operator(node: Node, metadata: any) {
+    protected _operator(node: estree.Node, metadata: any) {
         if (node.type !== esprima.Syntax.Program) {
             if (this.is_buggy_line(metadata, false)) {
                 this._nodes[this.n].push(node);

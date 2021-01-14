@@ -27,11 +27,11 @@ class ConditionalInverterOperator extends MutationOperator_1.MutationOperator {
     }
     _generate_patch() {
         if (this._err !== null)
-            return super.code;
+            return super.cleaned_code;
         if (this._conditionals.length > 0) {
             const if_index = rand_1.Rand.range(this._test_range.length);
             const range_if = this._test_range[if_index];
-            let patch = "!(" + super.code.slice(range_if[0], range_if[1]) + ')';
+            let patch = "!(" + super.cleaned_code.slice(range_if[0], range_if[1]) + ')';
             // kill generated redundancies
             if (patch.indexOf("!(!(", 0) === 0) {
                 // slice off supposed first "!(!(" and last "))" part of the string
@@ -69,10 +69,10 @@ class ConditionalInverterOperator extends MutationOperator_1.MutationOperator {
                 if (!fail)
                     patch = try_patch;
             }
-            return super.code.slice(0, range_if[0]) +
-                patch + super.code.slice(range_if[1]);
+            return super.cleaned_code.slice(0, range_if[0]) +
+                patch + super.cleaned_code.slice(range_if[1]);
         }
-        return super.code;
+        return super.cleaned_code;
     }
 }
 exports.ConditionalInverterOperator = ConditionalInverterOperator;

@@ -33,7 +33,7 @@ export class NullCheckOperator extends MutationOperator {
     }
 
     protected _operator(node: estree.Node, metadata: any): void {
-        if (this.is_buggy_line(metadata)) {
+        if (this.is_buggy_line(metadata, false)) {
             if (node.type === Syntax.MemberExpression) {
                 this._members.push(node);
                 this._members_meta.push(metadata);
@@ -41,59 +41,54 @@ export class NullCheckOperator extends MutationOperator {
                 this._calls.push(node);
                 this._calls_meta.push(metadata);
             } else if (node.type === Syntax.Identifier) {
-                let left = metadata.start.offset > 0 && super.code[metadata.start.offset - 1] === '.';
-                let right = super.code[metadata.end.offset] === '.' || super.code[metadata.end.offset] === '(';
-
-                if (!(left || right)) {
-                    this._idents.push(node);
-                    this._idents_meta.push(metadata);
-                }
+                this._idents.push(node);
+                this._idents_meta.push(metadata);
             } else if (node.type === Syntax.UnaryExpression) {
                 this._unaries.push(node);
                 this._unaries_meta.push(metadata);
             }
         }
+
+        if (node.type === Syntax.MemberExpression || node.type === Syntax.CallExpression ||
+            node.type === Syntax.Identifier || node.type === Syntax.UnaryExpression) {
+            this.stash(node, metadata);
+        }
     }
 
     protected _generate_patch(): string {
         if (this._err !== null)
-            return super.code;
+            return super.cleaned_code;
 
-        if (this._members.length > 0 ||
-            this._idents.length > 0 ||
-            this._unaries.length > 0 ||
-            this._calls.length > 0) {
+        let everyone: Array<estree.Node> = [];
+        let everyone_meta: Array<any> = [];
+        everyone = everyone.concat(this._idents).concat(this._members)
+            .concat(this._unaries).concat(this._calls);
+        everyone_meta = everyone_meta.concat(this._idents_meta).concat(this._members_meta)
+            .concat(this._unaries_meta).concat(this._calls_meta);
 
-            let everyone: Array<estree.Node> = [];
-            let everyone_meta: Array<any> = [];
-            everyone = everyone.concat(this._idents).concat(this._members)
-                .concat(this._unaries).concat(this._calls);
-            everyone_meta = everyone_meta.concat(this._idents_meta).concat(this._members_meta)
-                .concat(this._unaries_meta).concat(this._calls_meta);
+        if (everyone.length > 0) {
+            [everyone, everyone_meta] = filters.remove_duplicates(everyone, everyone_meta);
+            //[everyone, everyone_meta] = filters.filter_lower_orders(everyone, everyone_meta);
 
-            [everyone, everyone_meta] = filters.filter_lower_orders(everyone, everyone_meta);
+            let rand = Rand.range(everyone.length);
+            const node = everyone[rand];
+            const meta = everyone_meta[rand];
 
-            if (everyone.length > 0) {
-                let rand = Rand.range(0, everyone.length);
-                const node = everyone[rand];
-                const meta = everyone_meta[rand];
+            let patch = super.node_code(meta);
 
-                let patch = super.code.slice(meta.start.offset, meta.end.offset);
+            patch += " && ";
+            patch = Math.random() < 0.5 ? patch : '!' + patch;
 
-                patch += " && ";
-                patch = Math.random() < 0.5 ? patch : '!' + patch;
-
-                // kill generated redundant logical negates
-                if (patch.indexOf('!!', 0) === 0) {
-                    patch = patch.slice(2, patch.length);
-                }
-
-                // insert before
-                return super.code.slice(0, meta.start.offset) +
-                    patch + super.code.slice(meta.start.offset);
+            // kill generated redundant logical negates
+            if (patch.indexOf('!!', 0) === 0) {
+                patch = patch.slice(2, patch.length);
             }
+
+            // insert before
+            return super.cleaned_code.slice(0, meta.start.offset) +
+                patch + super.cleaned_code.slice(meta.start.offset);
         }
 
-        return super.code;
+        return super.cleaned_code;
     }
 }

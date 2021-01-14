@@ -1,9 +1,12 @@
 {
     "operators": [
+        "ArithmeticBinaryOperatorChanger",
+        "BinaryOperatorChanger",
+        "BitwiseBinaryOperatorChanger",
         "CallChangerOperator",
+        "ConditionalBinaryOperatorChanger",
         "ConditionalChangerOperator",
         "ConditionalInverterOperator",
-        "ConditionalTypeChangerOperator",
         "ExprReplacerOperator",
         "ExprStatementChangerOperator",
         "ExprStatementInserterOperator",
@@ -14,6 +17,7 @@
         "NullCheckOperator",
         "NumberChangerOperator",
         "ReturnInsertOperator",
+        "ShiftOperatorChanger",
         "TreeCrossoverOperator",
         "VarChangerOperator"
     ]

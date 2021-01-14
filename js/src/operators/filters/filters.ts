@@ -1,6 +1,7 @@
 import { Syntax } from "esprima";
 import estree from "estree";
 import { Node } from "estree";
+import escodegen from "escodegen";
 
 
 /**
@@ -160,13 +161,19 @@ export function remove_brackets(str: string): string {
 }
 
 
-export function filter_expr_type(nodes: Array<estree.ExpressionStatement | estree.Expression>, metadata: Array<any>, expr_type: string): Array<Array<estree.ExpressionStatement | estree.Expression> & Array<any>> {
+export function filter_expr_type(nodes: Array<estree.ExpressionStatement | estree.Expression>, metadata: Array<any>, expr_type: String | Array<String>): Array<Array<estree.ExpressionStatement | estree.Expression> & Array<any>> {
     if (!nodes || nodes.length <= 0 ||
         !metadata || metadata.length <= 0)
         return [[], []];
 
     if (expr_type === undefined)
         throw TypeError("undefined expression type passed");
+
+    let expr_filter: Array<String>;
+    if (expr_type instanceof String)
+        expr_filter = [ expr_type ];
+    else
+        expr_filter = expr_type;
 
     let filtered = [], filtered_meta = [];
     for (let i = 0; i < nodes.length; ++i) {
@@ -175,7 +182,7 @@ export function filter_expr_type(nodes: Array<estree.ExpressionStatement | estre
         // ExpressionStatements case
         if ((node as estree.ExpressionStatement).expression) {
             const expr_statement: estree.ExpressionStatement = node as estree.ExpressionStatement;
-            if (expr_statement.expression.type === expr_type) {
+            if (expr_filter.includes(expr_statement.expression.type)) {
                 const meta = metadata[i];
     
                 filtered.push(node);
@@ -183,7 +190,7 @@ export function filter_expr_type(nodes: Array<estree.ExpressionStatement | estre
             }
         }
         // Simple Expressions case
-        else if (node.type === expr_type) {
+        else if (expr_filter.includes(node.type)) {
             const meta = metadata[i];
 
             filtered.push(node);
@@ -342,6 +349,149 @@ export function filter_between(nodes: Array<Node>, metadata: Array<any>, left: n
 
         if (!(meta.start.offset >= left && meta.end.offset <= right)) {
             const node = nodes[i];
+
+            filtered.push(node);
+            filtered_meta.push(meta);
+        }
+    }
+
+    return [filtered, filtered_meta];
+}
+
+export function keep_between(nodes: Array<Node>, metadata: Array<any>, left: number, right: number): Array<Array<Node> & Array<any>> {
+    if (!nodes || nodes.length <= 0 ||
+        !metadata || metadata.length <= 0)
+        return [[], []];
+
+    if (isNaN(left) || isNaN(right))
+        throw TypeError("left and right offset must be defined");
+
+    let filtered = [], filtered_meta = [];
+    for (let i = 0; i < nodes.length; ++i) {
+        const meta = metadata[i];
+
+        if (meta.start.offset >= left && meta.end.offset <= right) {
+            const node = nodes[i];
+
+            filtered.push(node);
+            filtered_meta.push(meta);
+        }
+    }
+
+    return [filtered, filtered_meta];
+}
+
+function is_inside(check_this: any, inside: any): boolean {
+    if (check_this.start.offset >= inside.start.offset &&
+        check_this.end.offset <= inside.end.offset)
+        return true;
+    return false;
+}
+
+
+export function remove_call_identifiers(nodes: Array<Node>, metadata: Array<any>): Array<Array<Node> & Array<any>> {
+    if (!nodes || nodes.length <= 0 ||
+        !metadata || metadata.length <= 0)
+        return [[], []];
+
+    let filtered: Array<Node> = [], filtered_meta: Array<any> = [];
+    let call_meta: Array<any> = [];
+
+    // get call positions (metadata)
+    // we will filter by them
+    for (let i = 0; i < nodes.length; ++i) {
+        let node = nodes[i];
+        let meta = metadata[i];
+
+        if (node.type === Syntax.CallExpression) {
+            call_meta.push(meta);
+        }
+    }
+
+    metadata.forEach((meta, index) => {
+        let found = false;
+        let node = nodes[index];
+
+        for (let i = 0; i < call_meta.length; ++i) {
+            let cmeta = call_meta[i];
+
+            if (is_inside(meta, cmeta)) {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found && node.type !== Syntax.CallExpression) {
+            filtered.push(node);
+            filtered_meta.push(meta);
+        }
+    });
+
+    return [filtered, filtered_meta];
+}
+
+
+/**
+ * @brief remove_duplicates - removes duplicate nodes, by generating a string represetation
+ * of the AST node and comparing them
+ * 
+ * @param nodes
+ * @param metadata
+ * 
+ * @return duplicate free list of nodes
+ */
+export function remove_duplicates(nodes: Array<Node>, metadata: Array<any>): Array<Array<Node> & Array<any>> {
+    if (!nodes || nodes.length <= 0 ||
+        !metadata || metadata.length <= 0)
+        return [[], []];
+
+    let filtered: Array<Node> = [], filtered_meta: Array<any> = [];
+    let call_meta: Array<any> = [];
+
+    nodes.forEach((value, index) => {
+        let duplicate = false;
+        let code_string = escodegen.generate(value);
+
+        for (let i = 0; i < filtered.length; ++i) {
+            let find_me = escodegen.generate(filtered[i]);
+
+            if (find_me === code_string) {
+                duplicate = true;
+                break;
+            }
+        }
+
+        if (!duplicate) {
+            filtered.push(value);
+            filtered_meta.push(metadata[index]);
+        }
+
+    });
+
+    return [filtered, filtered_meta];
+}
+
+
+export function filter_type(nodes: Array<estree.Node>, metadata: Array<any>, type: String | Array<String>): Array<Array<estree.Node> & Array<any>> {
+    if (!nodes || nodes.length <= 0 ||
+        !metadata || metadata.length <= 0)
+        return [[], []];
+
+    if (type === undefined)
+        throw TypeError("undefined expression type passed");
+
+    let type_filter: Array<String>;
+    if (type instanceof String)
+        type_filter = [ type ];
+    else
+        type_filter = type;
+
+    let filtered = [], filtered_meta = [];
+    for (let i = 0; i < nodes.length; ++i) {
+        const node = nodes[i];
+    
+        if (type_filter.includes(node.type)) {
+            const meta = metadata[i];
 
             filtered.push(node);
             filtered_meta.push(meta);

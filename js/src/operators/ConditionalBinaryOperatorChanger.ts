@@ -3,17 +3,15 @@ import estree from "estree";
 import { MutationOperator } from "./base/MutationOperator";
 import { Rand } from "../random/rand";
 
-// TODO: is this all?
-export const mutations = [
+const mutations = new Set([
     "===", "!==",
     "<=", ">=",
     "!=", "==",
-    "<", ">",
-    '|', '&', '^'
-];
+    "<", ">"
+]);
 
 
-export class ConditionalTypeChangerOperator extends MutationOperator {
+export class ConditionalBinaryOperatorChanger extends MutationOperator {
     private _binaries: Array<estree.BinaryExpression> = [];
     private _binaries_meta: Array<any> = [];
 
@@ -28,14 +26,16 @@ export class ConditionalTypeChangerOperator extends MutationOperator {
     }
 
     protected _operator(node: estree.Node, metadata: any): void {
-        if (this.is_buggy_line(metadata)) {
+        if (this.is_buggy_line(metadata, false)) {
             // filter for BinaryExpressions,
             // this does NOT include LogicalExpressions like && and ||
             if (node.type === Syntax.BinaryExpression) {
                 // if replaceable operator is in the list
-                if (mutations.indexOf(node.operator) >= 0) {
+                if (mutations.has(node.operator)) {
                     this._binaries.push(node);
                     this._binaries_meta.push(metadata);
+
+                    this.stash(node, metadata);
                 }
             }
         }
@@ -43,22 +43,26 @@ export class ConditionalTypeChangerOperator extends MutationOperator {
 
     protected _generate_patch(): string {
         if (this._err !== null)
-            return super.code;
+            return super.cleaned_code;
 
-        if (this._binaries.length > 0) {
-            let patch = mutations[Rand.range(mutations.length)];
+        let binaries = this._binaries.filter(value => { return super.node_id(value) === 0; });
+        let binaries_meta = this._binaries_meta.filter(value => { return super.node_id(value) === 0; });
 
-            const index = Rand.range(this._binaries.length);
-            const node = this._binaries[index];
-            const meta = this._binaries_meta[index];
+        if (binaries.length > 0) {
+            const mut_values = Array.from(mutations.values())
+            let patch = mut_values[Rand.range(mut_values.length)];
 
-            const binexpr = super.code.slice(meta.start.offset, meta.end.offset);
+            const index = Rand.range(binaries.length);
+            const node = binaries[index];
+            const meta = binaries_meta[index];
+
+            const binexpr = super.cleaned_code.slice(meta.start.offset, meta.end.offset);
             patch = binexpr.replace(node.operator.toString(), patch);
 
-            return super.code.slice(0, meta.start.offset) +
-                patch + super.code.slice(meta.end.offset);
+            return super.cleaned_code.slice(0, meta.start.offset) +
+                patch + super.cleaned_code.slice(meta.end.offset);
         }
 
-        return super.code;
+        return super.cleaned_code;
     }
 }

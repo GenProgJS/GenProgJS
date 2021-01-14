@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">35.59% </span>
+                <span class="strong">40.63% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>21/59</span>
+                <span class='fraction'>26/64</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">37.5% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/6</span>
+                <span class='fraction'>3/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">30.91% </span>
+                <span class="strong">37.93% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>17/55</span>
+                <span class='fraction'>22/58</span>
             </div>
         
             
@@ -143,7 +143,10 @@
 <a name='L84'></a><a href='#L84'>84</a>
 <a name='L85'></a><a href='#L85'>85</a>
 <a name='L86'></a><a href='#L86'>86</a>
-<a name='L87'></a><a href='#L87'>87</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -164,11 +167,11 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -186,8 +189,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -249,12 +255,12 @@ const filters = __importStar(require("./filters/filters"));
 const config = __importStar(require("./config/config.json"));
 const index_1 = require("./gens/index");
 class MutExprStatementChangerOperator extends MutationOperator_1.MutationOperator {
-<span class="fstat-no" title="function not covered" >    co</span>nstructor(code, buggy_line) {
-<span class="cstat-no" title="statement not covered" >        super(code, buggy_line);</span>
-<span class="cstat-no" title="statement not covered" >        this._nodes = [];</span>
-<span class="cstat-no" title="statement not covered" >        this._meta = [];</span>
-<span class="cstat-no" title="statement not covered" >        this._buggy_statements = [];</span>
-<span class="cstat-no" title="statement not covered" >        this._buggy_statements_meta = [];</span>
+    constructor(code, buggy_line) {
+        super(code, buggy_line);
+        this._nodes = [];
+        this._meta = [];
+        this._buggy_statements = [];
+        this._buggy_statements_meta = [];
     }
 <span class="fstat-no" title="function not covered" >    _i</span>nit() {
 <span class="cstat-no" title="statement not covered" >        this._nodes = [];</span>
@@ -264,7 +270,7 @@ class MutExprStatementChangerOperator extends MutationOperator_1.MutationOperato
 <span class="cstat-no" title="statement not covered" >        super._init();</span>
     }
 <span class="fstat-no" title="function not covered" >    _o</span>perator(node, metadata) {
-<span class="cstat-no" title="statement not covered" >        if (this.is_buggy_line(metadata)) {</span>
+<span class="cstat-no" title="statement not covered" >        if (this.is_buggy_line(metadata, false)) {</span>
 <span class="cstat-no" title="statement not covered" >            if (node.type === esprima_1.Syntax.ExpressionStatement) {</span>
 <span class="cstat-no" title="statement not covered" >                this._buggy_statements.push(node);</span>
 <span class="cstat-no" title="statement not covered" >                this._buggy_statements_meta.push(metadata);</span>
@@ -272,16 +278,19 @@ class MutExprStatementChangerOperator extends MutationOperator_1.MutationOperato
         }
 <span class="cstat-no" title="statement not covered" >        this._nodes.push(node);</span>
 <span class="cstat-no" title="statement not covered" >        this._meta.push(metadata);</span>
+<span class="cstat-no" title="statement not covered" >        this.stash(node, metadata);</span>
     }
 <span class="fstat-no" title="function not covered" >    _g</span>enerate_patch() {
 <span class="cstat-no" title="statement not covered" >        if (this._err !== null)</span>
-<span class="cstat-no" title="statement not covered" >            return super.code;</span>
-<span class="cstat-no" title="statement not covered" >        if (this._buggy_statements.length &gt; 0) {</span>
+<span class="cstat-no" title="statement not covered" >            return super.cleaned_code;</span>
+        let buggy_statements = <span class="cstat-no" title="statement not covered" >this._buggy_statements.filter(<span class="fstat-no" title="function not covered" >va</span>lue =&gt; { <span class="cstat-no" title="statement not covered" >return super.node_id(value) === 0; </span>});</span>
+        let buggy_statements_meta = <span class="cstat-no" title="statement not covered" >this._buggy_statements_meta.filter(<span class="fstat-no" title="function not covered" >va</span>lue =&gt; { <span class="cstat-no" title="statement not covered" >return super.node_id(value) === 0; </span>});</span>
+<span class="cstat-no" title="statement not covered" >        if (buggy_statements.length &gt; 0) {</span>
             // possibly always be 0, but who knows...
             // in case of multiple expressions in one line
-            const index = <span class="cstat-no" title="statement not covered" >rand_1.Rand.range(this._buggy_statements.length);</span>
-            const bug = <span class="cstat-no" title="statement not covered" >this._buggy_statements[index];</span>
-            const bug_meta = <span class="cstat-no" title="statement not covered" >this._buggy_statements_meta[index];</span>
+            const index = <span class="cstat-no" title="statement not covered" >rand_1.Rand.range(buggy_statements.length);</span>
+            const bug = <span class="cstat-no" title="statement not covered" >buggy_statements[index];</span>
+            const bug_meta = <span class="cstat-no" title="statement not covered" >buggy_statements_meta[index];</span>
             let nodes, metadata;
 <span class="cstat-no" title="statement not covered" >            [nodes, metadata] = filters.filter_by_offset(this._nodes, this._meta, bug_meta, config.left_offset_threshold, config.right_offset_threshold);</span>
 <span class="cstat-no" title="statement not covered" >            [nodes, metadata] = filters.filter_between(nodes, metadata, bug_meta.start.offset, bug_meta.end.offset);</span>
@@ -302,16 +311,16 @@ class MutExprStatementChangerOperator extends MutationOperator_1.MutationOperato
             }
             catch (err) {
 <span class="cstat-no" title="statement not covered" >                this._err = err;</span>
-<span class="cstat-no" title="statement not covered" >                return super.code;</span>
+<span class="cstat-no" title="statement not covered" >                return super.cleaned_code;</span>
                 ;
             }
 <span class="cstat-no" title="statement not covered" >            if (new_node) {</span>
                 const patch = <span class="cstat-no" title="statement not covered" >index_1.gencode(escodegen_1.default, new_node);</span>
-<span class="cstat-no" title="statement not covered" >                return super.code.slice(0, bug_meta.start.offset) +</span>
-                    patch + super.code.slice(bug_meta.end.offset);
+<span class="cstat-no" title="statement not covered" >                return super.cleaned_code.slice(0, bug_meta.start.offset) +</span>
+                    patch + super.cleaned_code.slice(bug_meta.end.offset);
             }
         }
-<span class="cstat-no" title="statement not covered" >        return super.code;</span>
+<span class="cstat-no" title="statement not covered" >        return super.cleaned_code;</span>
     }
 }
 exports.MutExprStatementChangerOperator = MutExprStatementChangerOperator;
@@ -322,7 +331,7 @@ exports.MutExprStatementChangerOperator = MutExprStatementChangerOperator;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Sun Apr 19 2020 10:58:17 GMT+0200 (Central European Summer Time)
+                at Thu Jul 16 2020 19:26:18 GMT+0200 (Central European Summer Time)
             </div>
         </div>
         <script src="../prettify.js"></script>

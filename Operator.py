@@ -8,6 +8,26 @@ import genprogJS.Logger as Logger
 import subprocess
 
 
+def change_eval_in_source(source, new_code):
+    if "eval(" not in source:
+        return source
+    i = source.index("eval(") + 5
+    start = i
+    end = len(source)
+    par = 1
+    while i < end:
+        i += 1
+        if source[i] == "(":
+            par += 1
+        elif source[i] == ")":
+            par -= 1
+            if par == 0:
+                end = i
+                break
+
+    return source[0:start] + new_code + source[end:-1]
+
+
 class Operator(object):
     js_file_path = "js/bin/src/index.js"
 
@@ -26,7 +46,7 @@ class Operator(object):
         if not os.path.exists(Parameters.TEMP_DIR):
             os.makedirs(Parameters.TEMP_DIR)
 
-        with open(Parameters.TEMP_DIR + filename + '.buggy', 'w') as file:
+        with open(Parameters.TEMP_DIR + filename + '.buggy', 'w', encoding='utf-8') as file:
             file.write(str(line_index) + "\n")
             for individual in individuals:
                 file.write("___EOL___".join(individual.get_code()) + "\n")
@@ -46,7 +66,7 @@ class Operator(object):
 
             if os.path.exists(Parameters.TEMP_DIR + filename + '.potential'):
                 i = -1
-                with open(Parameters.TEMP_DIR + filename + '.potential', 'r') as file:
+                with open(Parameters.TEMP_DIR + filename + '.potential', 'r', encoding='utf-8') as file:
                     for new_code in file:
                         i += 1
                         if new_code == '' or new_code == '\n' or new_code == '\r\n':
@@ -55,10 +75,14 @@ class Operator(object):
                             continue
                         elif len(individuals) <= i:
                             break
-                        
+
                         individual = individuals[i].copy()
                         splitted_new_code = new_code.strip().split('___EOL___')
-                        if "".join(individual.get_code()) != "".join(splitted_new_code):       
+                        if "".join(individual.get_code()) != "".join(splitted_new_code):
+
+                            if self.name == "EvalMutationOperator":
+                                splitted_new_code = change_eval_in_source(individual.get_code(), splitted_new_code)
+
                             individual.set_code(splitted_new_code)
                             if self.is_crossover:
                                 individual.set_applied_operators([self.name + '; ' + individual.get_modified_line() + '; parents; ' + individuals[0].get_modified_line() + '; ' + individuals[1].get_modified_line()])
@@ -73,3 +97,4 @@ class Operator(object):
 
         else:
             return individuals
+

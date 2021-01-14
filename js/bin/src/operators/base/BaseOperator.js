@@ -9,6 +9,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const esprima = __importStar(require("esprima"));
 const config = __importStar(require("../config/config.json"));
+var PreprocessOpt;
+(function (PreprocessOpt) {
+    PreprocessOpt[PreprocessOpt["replace"] = 0] = "replace";
+    PreprocessOpt[PreprocessOpt["remove"] = 1] = "remove";
+})(PreprocessOpt = exports.PreprocessOpt || (exports.PreprocessOpt = {}));
 class BaseOperator {
     constructor() {
         this._code = '';
@@ -43,14 +48,46 @@ class BaseOperator {
      * @brief code - gets the patched code after a successful operation
      * @returns {string}
      */
-    get code() { return this._code; }
+    get code() { return BaseOperator.preprocess(this._code); }
     get err() { return this._err; }
-    is_buggy_line(metadata, end_same_line = true) {
+    is_buggy_line(metadata, end_same_line = false) {
         if (end_same_line) {
             return metadata.start.line === this.buggy_line &&
                 metadata.end.line === this.buggy_line;
         }
         return metadata.start.line === this.buggy_line;
+    }
+    static preprocess(code, opt = PreprocessOpt.remove) {
+        let raw_code_lines = code.split('\n');
+        let processed_lines = [];
+        if (opt === PreprocessOpt.replace) {
+            let replace;
+            let pred;
+            raw_code_lines.forEach(line => {
+                if (line.trim().indexOf("___ORIGIN___:") === 0) {
+                    pred = line.substring(0, line.indexOf("___ORIGIN___:"));
+                    replace = pred + line.split("___ORIGIN___:")[1];
+                }
+                else {
+                    if (replace !== undefined) {
+                        processed_lines.push(replace);
+                        replace = undefined;
+                    }
+                    else {
+                        processed_lines.push(line);
+                    }
+                }
+            });
+        }
+        else {
+            raw_code_lines.forEach(line => {
+                if (line.trim().indexOf("___ORIGIN___:") !== 0) {
+                    processed_lines.push(line);
+                }
+            });
+        }
+        let processed = processed_lines.join('\n');
+        return processed;
     }
 }
 exports.BaseOperator = BaseOperator;

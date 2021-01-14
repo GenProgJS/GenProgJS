@@ -27,6 +27,9 @@ class Individual(object):
         self.repair_time = 0
         self.generation = 0
 
+    def __eq__(self, other):
+        return self.get_modified_line() == other.get_modified_line()
+
     def set_generation(self, generation):
         self.generation = generation
 
@@ -123,7 +126,7 @@ class Individual(object):
         try:
             esprima.parseScript("\n".join(self.get_code()))
 
-            with open("../output/" + self.args["project"].lower() + "/" + self.args["file"], 'w') as file:
+            with open("../output/" + self.args["project"].lower() + "/" + self.args["file"], 'w', encoding='utf-8') as file:
                 file.write("\n".join(self.get_code()))
 
             if not os.path.exists(Parameters.ROOT_DIR + '/temp'):
@@ -141,7 +144,7 @@ class Individual(object):
             process.wait()
 
             if os.path.exists(path):
-                with open(path, 'r') as file:
+                with open(path, 'r', encoding='utf-8') as file:
                     test_stat = json.loads(file.readline().strip())
 
                     self.fitness = float(
@@ -191,3 +194,35 @@ class Individual(object):
             i = i + 1
 
         return int(worksheet.cell(i, j).value)
+
+    def insert_line(self, index, line):
+        lines = self.code.split('\n')
+        # make sure to insert only one line
+        line = line.strip('\n')
+        lines.insert(index, line)
+        self.code = '\n'.join(lines)
+
+    def remove_line(self, index):
+        lines = self.code.split('\n')
+        lines.pop(index)
+        self.code = '\n'.join(lines)
+
+    def insert_origin(self, individual: 'Individual'):
+        """
+        Inserts the original line by another individual
+
+        :param individual: another Individual object, possibly the one containing the original source code
+        :return:
+        """
+        original_line = individual.code.split('\n')[individual.get_index()]
+        self.insert_line(self.get_index(), '___ORIGIN___:' + original_line)
+
+    def remove_origin(self):
+        """
+        Removes lines marked with '___ORIGIN___:'
+
+        :return:
+        """
+        lines = self.code.split('\n')
+        lines = list(filter(lambda line: line.find('___ORIGIN___:') < 0, lines))
+        self.code = '\n'.join(lines)

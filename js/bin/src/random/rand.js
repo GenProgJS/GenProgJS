@@ -13,5 +13,28 @@ class Rand {
                 return (last - first) * Math.random() + first;
         }
     }
+    static generate(length, func = undefined, ...args) {
+        if (length <= 0)
+            return [];
+        let rands = [];
+        if (func === undefined) {
+            for (let i = 0; i < length; ++i) {
+                rands.push(Math.random());
+            }
+        }
+        else {
+            if (args === undefined) {
+                for (let i = 0; i < length; ++i) {
+                    rands.push(func());
+                }
+            }
+            else {
+                for (let i = 0; i < length; ++i) {
+                    rands.push(func(...args));
+                }
+            }
+        }
+        return rands;
+    }
 }
 exports.Rand = Rand;

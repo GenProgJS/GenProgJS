@@ -21,6 +21,9 @@ export interface CrossoverOperatorConstructible {
     new (code1: string, code2: string, buggy_line: number): Operator;
 }
 
+export enum PreprocessOpt {
+    replace, remove
+}
 
 export abstract class BaseOperator implements Operator {
     protected _code: string = '';
@@ -75,13 +78,13 @@ export abstract class BaseOperator implements Operator {
      * @returns {string}
      */
     public get code(): string
-    { return this._code; }
+    { return BaseOperator.preprocess(this._code); }
 
     public get err(): Error | null
     { return this._err; }
 
 
-    protected is_buggy_line(metadata: any, end_same_line: boolean = true): boolean {
+    protected is_buggy_line(metadata: any, end_same_line: boolean = false): boolean {
         if (end_same_line) {
             return metadata.start.line === this.buggy_line &&
                 metadata.end.line === this.buggy_line;
@@ -89,4 +92,42 @@ export abstract class BaseOperator implements Operator {
 
         return metadata.start.line === this.buggy_line;
     }
+
+
+    protected static preprocess(code: string, opt: PreprocessOpt = PreprocessOpt.remove): string {
+        let raw_code_lines = code.split('\n');
+        let processed_lines: Array<string> = [];
+    
+        if (opt === PreprocessOpt.replace) {
+            let replace: undefined | string;
+            let pred: undefined | string;
+            raw_code_lines.forEach(line => {
+                if (line.trim().indexOf("___ORIGIN___:") === 0) {
+                    pred = line.substring(0, line.indexOf("___ORIGIN___:"));
+                    replace = pred + line.split("___ORIGIN___:")[1];
+                }
+                else {
+                    if (replace !== undefined) {
+                        processed_lines.push(replace);
+                        replace = undefined;
+                    }
+                    else {
+                        processed_lines.push(line);
+                    }
+                }
+            });
+        }
+        else {
+            raw_code_lines.forEach(line => {
+                if (line.trim().indexOf("___ORIGIN___:") !== 0) {
+                    processed_lines.push(line);
+                }
+            });
+        }
+
+        let processed = processed_lines.join('\n');
+
+        return processed;
+    }
+
 }

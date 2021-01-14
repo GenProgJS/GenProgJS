@@ -29,32 +29,32 @@ class ExprReplacerOperator extends MutationOperator_1.MutationOperator {
         super._init();
     }
     _operator(node, metadata) {
-        if (ExprReplacerOperator._exclude.includes(node.type))
+        if (ExprReplacerOperator._exclude != null && ExprReplacerOperator._exclude.includes(node.type))
             return;
-        if (this.is_buggy_line(metadata)) {
-            // filter for every type of expressions
-            // excluding ExpressionStatements
-            if (node.type.indexOf("Expression") > 0) {
+        // filter for every type of expressions
+        // excluding ExpressionStatements
+        if (node.type.indexOf("Expression") > 0) {
+            if (this.is_buggy_line(metadata, false)) {
                 this._buggy_expressions.push(node);
                 this._buggy_expressions_meta.push(metadata);
-                this._expressions.push(node);
-                this._expressions_meta.push(metadata);
             }
-        }
-        else if (node.type.indexOf("Expression") > 0) {
             this._expressions.push(node);
             this._expressions_meta.push(metadata);
+            this.stash(node, metadata);
         }
     }
     _generate_patch() {
         if (this._err !== null)
-            return super.code;
-        if (this._buggy_expressions.length > 0) {
-            const index = rand_1.Rand.range(this._buggy_expressions.length);
-            const buggy = this._buggy_expressions[index];
-            const meta = this._buggy_expressions_meta[index];
+            return super.cleaned_code;
+        let buggy_expressions = this._buggy_expressions.filter(value => { return super.node_id(value) === 0; });
+        let buggy_expressions_meta = this._buggy_expressions_meta.filter(value => { return super.node_id(value) === 0; });
+        if (buggy_expressions.length > 0) {
+            const index = rand_1.Rand.range(buggy_expressions.length);
+            const buggy = buggy_expressions[index];
+            const meta = buggy_expressions_meta[index];
             let replacements, replacements_meta;
-            [replacements, replacements_meta] = filters.filter_expr_type(this._expressions, this._expressions_meta, buggy.type);
+            [replacements, replacements_meta] = filters.remove_duplicates(this._expressions, this._expressions_meta);
+            [replacements, replacements_meta] = filters.filter_expr_type(replacements, replacements_meta, buggy.type);
             if (buggy.operator) {
                 [replacements, replacements_meta] = filters.filter_by_operator_type(replacements, replacements_meta, buggy.operator);
             }
@@ -73,28 +73,30 @@ class ExprReplacerOperator extends MutationOperator_1.MutationOperator {
                 if (buggy.type === esprima_1.Syntax.AssignmentExpression && replace_partial) {
                     // there is 50%, too to replace the assignment operator in the original code
                     const replace_op = Math.random() < 0.5;
-                    const buggy_code = super.code.slice(meta.start.offset, meta.end.offset);
+                    const buggy_code = super.node_code(meta);
                     const insert_index = buggy_code.indexOf(buggy.operator);
-                    const temp = super.code.slice(replacement_meta.start.offset, replacement_meta.end.offset);
+                    const temp = super.node_code(replacement_meta);
                     const pos = temp.indexOf(replacement.operator);
                     if (replace_op) {
                         patch = temp.slice(pos);
                         patch = buggy_code.substr(0, insert_index) + patch;
                     }
                     else {
-                        patch = super.code.slice(replacement.right.range[0], replacement.right.range[1]);
-                        return super.code.slice(0, buggy.right.range[0]) +
-                            patch + super.code.slice(buggy.right.range[1]);
+                        let node_id = super.node_id(replacement);
+                        patch = super.codes[node_id].slice(replacement.right.range[0], replacement.right.range[1]);
+                        return super.cleaned_code.slice(0, buggy.right.range[0]) +
+                            patch + super.cleaned_code.slice(buggy.right.range[1]);
                     }
                 }
                 else {
-                    patch = super.code.slice(replacement_meta.start.offset, replacement_meta.end.offset);
+                    let node_id = super.node_id(replacement_meta);
+                    patch = super.codes[node_id].slice(replacement_meta.start.offset, replacement_meta.end.offset);
                 }
-                return super.code.slice(0, meta.start.offset) +
-                    patch + super.code.slice(meta.end.offset);
+                return super.cleaned_code.slice(0, meta.start.offset) +
+                    patch + super.cleaned_code.slice(meta.end.offset);
             }
         }
-        return super.code;
+        return super.cleaned_code;
     }
 }
 exports.ExprReplacerOperator = ExprReplacerOperator;
