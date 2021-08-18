@@ -59,3 +59,10 @@ GenProgJS found plausible repairs for 31 bugs in 6 Node.js projects. In the foll
 | [Mongoose 11](https://bugsjs.github.io/dissection/#!/bug/Mongoose/11) | :negative_squared_cross_mark: | 300 | 477 | 382 | 588 | 147 |
 | [Pencilblue 4](https://bugsjs.github.io/dissection/#!/bug/Pencilblue/4) | :negative_squared_cross_mark: | 5 | 3 | 4 | 4 | - |
 
+
+## Contact
+If you have any questions, don't hesitate to contact us:
+Viktor Csuvik
+E-mail: csuvikv [at] inf.u-szeged.hu
+
+![MTA-SZTE Research Group on Artificial Intelligence, University of Szeged](./szte-logo.png)
