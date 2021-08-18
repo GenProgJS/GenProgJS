@@ -11,9 +11,9 @@ Originally, [GenProg](https://squareslab.github.io/genprog-code) was created to 
 ## Approach
 GenProgJS is a Test-based Automated Program Repair (APR) tool for JavaScript. It is written in Python and TypeScript by researchers to researchers. The main algorithm of GenProgJS is based on [GenProg](https://squareslab.github.io/genprog-code/), supplemented with JavaScript operators. The following figure illustrates a high-level overview of the architecture of the tool. For more details [read the paper](https://github.com/GenProgJS/GenProgJS/blob/master/paper.pdf) or check out the [source code](https://github.com/GenProgJS/GenProgJS).
 
-<object data="./architecture.pdf" type="application/pdf" width="700px" height="400px">
+<object data="./fig/architecture.pdf" type="application/pdf" width="700px" height="400px">
     <embed src="./architecture.pdf">
-        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="./architecture.pdf">Download PDF</a>.</p>
+        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="./fig/architecture.pdf">Download PDF</a>.</p>
     </embed>
 </object>
 
@@ -65,4 +65,4 @@ If you have any questions, don't hesitate to contact us:
 Viktor Csuvik
 E-mail: csuvikv [at] inf.u-szeged.hu
 
-![MTA-SZTE Research Group on Artificial Intelligence, University of Szeged](./szte-logo.png)
+![MTA-SZTE Research Group on Artificial Intelligence, University of Szeged](./fig/szte-logo.png)
