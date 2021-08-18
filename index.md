@@ -1,6 +1,4 @@
 ## GenProgJS: a Baseline System for Test-based Automated Repair of JavaScript Programs 
-
-# Abstract
 Originally, [GenProg](https://squareslab.github.io/genprog-code) was created to repair buggy programs written in the C programming language, launching a new discipline in Generate-and-Validate approach of Automated Program Repair (APR). Since then, a number of other tools has been published using a variety of repair approaches. Some of these still operate on programs written in C/C++, others on Java or even Python programs. In this work, a tool named GenProgJS is presented, which generates candidate patches for faulty JavaScript programs. The algorithm it uses is very similar to the genetic algorithm used in the original GenProg, hence the name. In addition to the traditional approach, solutions used in some more recent works were also incorporated, and JavaScript language-specific approaches were also taken into account when the tool was designed. To the best of our knowledge, the tool presented here is the first to apply GenProg’s general  generate-and-validate approach to JavaScript programs. We evaluate the method on the BugsJS bug database, where it successfully fixed 31 bugs in 6 open source Node.js projects. These bugs belong to 14 different categories showing the generic nature of the method. During the experiments, code transformations applied on the original source code are all traced, and an in-depth analysis of mutation operators and fine-grained changes are also presented. We share our findings with the APR research community and describe the difficulties and differences we faced while designed this JavaScript repair tool. The source code of GenProgJS is publicly available on Github, with a pre-configured Docker environment where it can easily be launched.
 
 
@@ -13,9 +11,9 @@ Originally, [GenProg](https://squareslab.github.io/genprog-code) was created to 
 ## Approach
 GenProgJS is a Test-based Automated Program Repair (APR) tool for JavaScript. It is written in Python and TypeScript by researchers to researchers. The main algorithm of GenProgJS is based on [GenProg](https://squareslab.github.io/genprog-code/), supplemented with JavaScript operators. The following figure illustrates a high-level overview of the architecture of the tool. For more details [read the paper](https://github.com/GenProgJS/GenProgJS/blob/master/paper.pdf) or check out the [source code](https://github.com/GenProgJS/GenProgJS).
 
-<object data="https://github.com/GenProgJS/GenProgJS/blob/gh-pages/architecture.pdf" type="application/pdf" width="700px" height="300px">
-    <embed src="https://github.com/GenProgJS/GenProgJS/blob/gh-pages/architecture.pdf">
-        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="https://github.com/GenProgJS/GenProgJS/blob/gh-pages/architecture.pdf">Download PDF</a>.</p>
+<object data="./architecture.pdf" type="application/pdf" width="700px" height="300px">
+    <embed src="./architecture.pdf">
+        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="./architecture.pdf">Download PDF</a>.</p>
     </embed>
 </object>
 
