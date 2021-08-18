@@ -65,4 +65,4 @@ If you have any questions, don't hesitate to contact us:
 Viktor Csuvik
 E-mail: csuvikv [at] inf.u-szeged.hu
 
-![MTA-SZTE Research Group on Artificial Intelligence, University of Szeged](./fig/szte-logo.png)
+<img src="./fig/szte-logo.png" width="200" height="200">
