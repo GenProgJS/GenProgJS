@@ -11,7 +11,7 @@ Originally, [GenProg](https://squareslab.github.io/genprog-code) was created to 
 ## Approach
 GenProgJS is a Test-based Automated Program Repair (APR) tool for JavaScript. It is written in Python and TypeScript by researchers to researchers. The main algorithm of GenProgJS is based on [GenProg](https://squareslab.github.io/genprog-code/), supplemented with JavaScript operators. The following figure illustrates a high-level overview of the architecture of the tool. For more details [read the paper](https://github.com/GenProgJS/GenProgJS/blob/master/paper.pdf) or check out the [source code](https://github.com/GenProgJS/GenProgJS).
 
-<object data="./architecture.pdf" type="application/pdf" width="700px" height="300px">
+<object data="./architecture.pdf" type="application/pdf" width="700px" height="400px">
     <embed src="./architecture.pdf">
         <p>This browser does not support PDFs. Please download the PDF to view it: <a href="./architecture.pdf">Download PDF</a>.</p>
     </embed>
@@ -23,7 +23,7 @@ GenProgJS integrates the [BugsJS dataset](https://bugsjs.github.io), which conta
 
 
 ## Results
-GenProgJS found plausible repairs for 31 bugs in 6 Node.js projects. In the following table we summarize the results. The numbered columns (from column 3 to 8) indicate the number of generated patches in each independent run. The shapes in column 2 have the following meaning: :heavy_check_mark: syntactic match, :ballot_box_with_check: semantic match, :negative_squared_cross_mark: uncertain.
+GenProgJS found plausible repairs for 31 bugs in 6 Node.js projects. In the following table we summarize the results. The numbered columns (from column 3 to 8) indicate the number of generated patches in each independent run. The shapes in column 2 have the following meaning: :heavy_check_mark: syntactic match, :white_check_mark: semantic match, :negative_squared_cross_mark: uncertain.
 
 | Bug Id | Correct fix? | #1 | #2 | #3 | #4 | #5 |
 |---|---|---|---|---|---|---|
@@ -34,27 +34,27 @@ GenProgJS found plausible repairs for 31 bugs in 6 Node.js projects. In the foll
 | [Eslint 72](https://bugsjs.github.io/dissection/#!/bug/Eslint/72) | :heavy_check_mark: | 3 | 4 | 7 | 5 | 7 |
 | [Eslint 94](https://bugsjs.github.io/dissection/#!/bug/Eslint/94) | :heavy_check_mark: | 70 | 94 | 14 | 67 | 114 |
 | [Eslint 100](https://bugsjs.github.io/dissection/#!/bug/Eslint/100) | :negative_squared_cross_mark: | 20 | 26 | 12 | 9 | 26 |
-| [Eslint 122](https://bugsjs.github.io/dissection/#!/bug/Eslint/122) | :ballot_box_with_check: | 1 | - | - | 1 | - |
+| [Eslint 122](https://bugsjs.github.io/dissection/#!/bug/Eslint/122) | :white_check_mark: | 1 | - | - | 1 | - |
 | [Eslint 130](https://bugsjs.github.io/dissection/#!/bug/Eslint/130) | :negative_squared_cross_mark: | - | - | 1 | - | - |
 | [Eslint 154](https://bugsjs.github.io/dissection/#!/bug/Eslint/154) | :negative_squared_cross_mark: | 21 | - | 25 | - | 29 |
 | [Eslint 158](https://bugsjs.github.io/dissection/#!/bug/Eslint/158) | :negative_squared_cross_mark: | - | - | 34 | 24 | 20 |
-| [Eslint 217](https://bugsjs.github.io/dissection/#!/bug/Eslint/217) | :ballot_box_with_check: | 6 | 5 | 4 | 4 | 6 |
-| [Eslint 221](https://bugsjs.github.io/dissection/#!/bug/Eslint/221) | :ballot_box_with_check: | 100 | 334 | 221 | 202 | 183 |
-| [Eslint 321](https://bugsjs.github.io/dissection/#!/bug/Eslint/321) | :ballot_box_with_check: | 9 | 4 | 5 | 8 | 13 |
+| [Eslint 217](https://bugsjs.github.io/dissection/#!/bug/Eslint/217) | :white_check_mark: | 6 | 5 | 4 | 4 | 6 |
+| [Eslint 221](https://bugsjs.github.io/dissection/#!/bug/Eslint/221) | :white_check_mark: | 100 | 334 | 221 | 202 | 183 |
+| [Eslint 321](https://bugsjs.github.io/dissection/#!/bug/Eslint/321) | :white_check_mark: | 9 | 4 | 5 | 8 | 13 |
 | [Eslint 323](https://bugsjs.github.io/dissection/#!/bug/Eslint/323) | :heavy_check_mark: | 260 | 192 | 198 | 159 | 220 |
 | [Express 2](https://bugsjs.github.io/dissection/#!/bug/Express/2) | :heavy_check_mark: | 2 | 5 | 4 | 115 | 19 |
 | [Express 3](https://bugsjs.github.io/dissection/#!/bug/Express/3) | :negative_squared_cross_mark: | 1 | - | - | - | 3 |
 | [Express 5](https://bugsjs.github.io/dissection/#!/bug/Express/5) | :negative_squared_cross_mark: | 23 | 61 | 57 | 15 | 100 |
-| [Express 8](https://bugsjs.github.io/dissection/#!/bug/Express/8) | :ballot_box_with_check: | 487 | 350 | 402 | 284 | 468 |
+| [Express 8](https://bugsjs.github.io/dissection/#!/bug/Express/8) | :white_check_mark: | 487 | 350 | 402 | 284 | 468 |
 | [Express 9](https://bugsjs.github.io/dissection/#!/bug/Express/9) | :negative_squared_cross_mark: | - | - | - | 1 | - |
 | [Express 16](https://bugsjs.github.io/dissection/#!/bug/Express/16) | :negative_squared_cross_mark: | 20 | - | 20 | 20 | 19 |
 | [Express 18](https://bugsjs.github.io/dissection/#!/bug/Express/18) | :negative_squared_cross_mark: | 122 | 151 | 67 | 110 | 127 |
 | [Express 26](https://bugsjs.github.io/dissection/#!/bug/Express/26) | :negative_squared_cross_mark: | - | 1 | - | - | - |
-| [Karma 3](https://bugsjs.github.io/dissection/#!/bug/Karma/3) | :ballot_box_with_check: | 1 | 2 | 3 | 2 | - |
+| [Karma 3](https://bugsjs.github.io/dissection/#!/bug/Karma/3) | :white_check_mark: | 1 | 2 | 3 | 2 | - |
 | [Karma 4](https://bugsjs.github.io/dissection/#!/bug/Karma/4) | :negative_squared_cross_mark: | - | - | 1 | - | - |
 | [Karma 9](https://bugsjs.github.io/dissection/#!/bug/Karma/9) | :negative_squared_cross_mark: | 28 | 30 | 22 | 20 | 31 |
 | [Mongoose 3](https://bugsjs.github.io/dissection/#!/bug/Mongoose/3) | :heavy_check_mark: | 166 | 286 | 226 | 516 | 270 |
-| [Mongoose 8](https://bugsjs.github.io/dissection/#!/bug/Mongoose/8) | :ballot_box_with_check: | - | 4 | 4 | 22 | 12 |
+| [Mongoose 8](https://bugsjs.github.io/dissection/#!/bug/Mongoose/8) | :white_check_mark: | - | 4 | 4 | 22 | 12 |
 | [Mongoose 11](https://bugsjs.github.io/dissection/#!/bug/Mongoose/11) | :negative_squared_cross_mark: | 300 | 477 | 382 | 588 | 147 |
 | [Pencilblue 4](https://bugsjs.github.io/dissection/#!/bug/Pencilblue/4) | :negative_squared_cross_mark: | 5 | 3 | 4 | 4 | - |
 
