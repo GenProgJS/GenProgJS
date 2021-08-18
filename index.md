@@ -3,7 +3,7 @@ Originally, [GenProg](https://squareslab.github.io/genprog-code) was created to 
 
 
 ## Online appendix components
- - [GenProgJS source code](https://genprogjs.github.io/GenProgJS/) (this page)
+ - [GenProgJS homepage](https://genprogjs.github.io/GenProgJS/) (this page)
  - [Docker environment](https://genprogjs.github.io/GenProgJS-Docker/)
  - [Experiment data](https://genprogjs.github.io/experiments/)
 
