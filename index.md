@@ -3,7 +3,7 @@ Originally, [GenProg](https://squareslab.github.io/genprog-code) was created to 
 
 
 ## Online appendix components
- - [GenProgJS source code](https://genprogjs.github.io/GenProgJS/)
+ - [GenProgJS source code](https://genprogjs.github.io/GenProgJS/) (this page)
  - [Docker environment](https://genprogjs.github.io/GenProgJS-Docker/)
  - [Experiment data](https://genprogjs.github.io/experiments/)
 
@@ -28,13 +28,14 @@ GenProgJS found plausible repairs for 31 bugs in 6 Node.js projects. In the foll
 | Bug Id | Correct fix? | #1 | #2 | #3 | #4 | #5 |
 |---|---|---|---|---|---|---|
 | [Bower 2](https://bugsjs.github.io/dissection/#!/bug/Bower/2) | :negative_squared_cross_mark: | - | 2 | - | - | 1 |
-| [Eslint 7](https://bugsjs.github.io/dissection/#!/bug/Eslint/1) | :negative_squared_cross_mark: | 1 | 3 | 4 | 6 | - |
+| [Eslint 1](https://bugsjs.github.io/dissection/#!/bug/Eslint/1) | :negative_squared_cross_mark: | 1 | 3 | 4 | 6 | - |
+| [Eslint 7](https://bugsjs.github.io/dissection/#!/bug/Eslint/7) | :negative_squared_cross_mark: | 15 | 16 | - | 17 | 29 |
 | [Eslint 41](https://bugsjs.github.io/dissection/#!/bug/Eslint/41) | :negative_squared_cross_mark: | - | 2 | 3 | - | 1 |
-| [Eslint 47](https://bugsjs.github.io/dissection/#!/bug/Eslint/47) | :negative_squared_cross_mark: | 1 | 1 | 3 | 1 | 1 |
+| [Eslint 47](https://bugsjs.github.io/dissection/#!/bug/Eslint/47) | :heavy_check_mark: | 1 | 1 | 3 | 1 | 1 |
 | [Eslint 72](https://bugsjs.github.io/dissection/#!/bug/Eslint/72) | :heavy_check_mark: | 3 | 4 | 7 | 5 | 7 |
-| [Eslint 94](https://bugsjs.github.io/dissection/#!/bug/Eslint/94) | :heavy_check_mark: | 70 | 94 | 14 | 67 | 114 |
-| [Eslint 100](https://bugsjs.github.io/dissection/#!/bug/Eslint/100) | :negative_squared_cross_mark: | 20 | 26 | 12 | 9 | 26 |
-| [Eslint 122](https://bugsjs.github.io/dissection/#!/bug/Eslint/122) | :white_check_mark: | 1 | - | - | 1 | - |
+| [Eslint 94](https://bugsjs.github.io/dissection/#!/bug/Eslint/94) | :negative_squared_cross_mark: | 70 | 94 | 14 | 67 | 114 |
+| [Eslint 100](https://bugsjs.github.io/dissection/#!/bug/Eslint/100) | :white_check_mark: | 20 | 26 | 12 | 9 | 26 |
+| [Eslint 122](https://bugsjs.github.io/dissection/#!/bug/Eslint/122) | :negative_squared_cross_mark: | 1 | - | - | 1 | - |
 | [Eslint 130](https://bugsjs.github.io/dissection/#!/bug/Eslint/130) | :negative_squared_cross_mark: | - | - | 1 | - | - |
 | [Eslint 154](https://bugsjs.github.io/dissection/#!/bug/Eslint/154) | :negative_squared_cross_mark: | 21 | - | 25 | - | 29 |
 | [Eslint 158](https://bugsjs.github.io/dissection/#!/bug/Eslint/158) | :negative_squared_cross_mark: | - | - | 34 | 24 | 20 |
