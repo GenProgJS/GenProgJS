@@ -61,8 +61,9 @@ GenProgJS found plausible repairs for 31 bugs in 6 Node.js projects. In the foll
 
 
 ## Contact
-If you have any questions, don't hesitate to contact us:
-Viktor Csuvik
-E-mail: csuvikv [at] inf.u-szeged.hu
+If you have any questions, don't hesitate to contact us:\
+**Viktor Csuvik**\
+E-mail: **csuvikv** [at] **inf.u-szeged.hu**
+
 
 <img src="./fig/szte-logo.png" width="200" height="200">
