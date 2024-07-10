@@ -71,7 +71,7 @@ class Operator(object):
                         i += 1
                         if new_code == '' or new_code == '\n' or new_code == '\r\n':
                             continue
-                        elif new_code.find("error::") is 0:
+                        elif new_code.find("error::") == 0:
                             continue
                         elif len(individuals) <= i:
                             break
